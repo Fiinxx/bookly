@@ -9,6 +9,10 @@ String email;
 String password;
 Role role;
 
+public User(){
+    super();
+}
+
 public User(String id, String username, String email, String password, Role role) {
     this.id = id;
     this.username = username;

@@ -8,6 +8,10 @@ public class Rating {
     String comment;
     String creationTime;
 
+    public Rating(){
+        super();
+    }
+
     public Rating(String id, int rating, String comment, String creationTime) {
         this.id = id;
         this.rating = rating;

@@ -19,6 +19,10 @@ public class Book {
     String publishingDate;
     List<Rating> ratings;
 
+    public Book(){
+        super();
+    }
+
 public Book(String isbn, String title, String author, int pagecount, String publisher, String genre, double price, String language, String description, String publishingDate, List<Rating> ratings){
     this.isbn = isbn;
     this.title = title;
