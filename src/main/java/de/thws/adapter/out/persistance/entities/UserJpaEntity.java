@@ -11,8 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@NoArgsConstructor()
 public class UserJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
