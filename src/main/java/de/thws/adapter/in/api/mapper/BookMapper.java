@@ -34,8 +34,12 @@ public class BookMapper
     public Book mapToDomainModel(BookDTO bookDTO)
     {
         final var returnValue = new Book();
+        if (bookDTO.getId() != 0){
+            returnValue.setId(bookDTO.getId());
+        }else {
+            returnValue.setId(null);
+        }
 
-        returnValue.setId(bookDTO.getId());
         returnValue.setIsbn(bookDTO.getIsbn());
         returnValue.setTitle(bookDTO.getTitle());
         returnValue.setAuthor(bookDTO.getAuthor());

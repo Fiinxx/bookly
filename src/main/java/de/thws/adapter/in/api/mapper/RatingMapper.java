@@ -22,7 +22,7 @@ public class RatingMapper
 
     public List<RatingDTO> mapToApiModels(List<Rating> resultList )
     {
-        return resultList.stream( ).map( this::mapToApiModel ).collect( Collectors.toList( ) );
+        return resultList.stream( ).map( this::mapToApiModel ).collect( Collectors.toList( ));
     }
 
     public Rating mapToDomainModel(RatingDTO ratingDTO)

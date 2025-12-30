@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @RequiredArgsConstructor
 public class Book {
-    private long id;
+    private Long id;
     private String isbn;
     private String title;
     private String author;

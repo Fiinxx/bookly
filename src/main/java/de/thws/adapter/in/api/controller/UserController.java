@@ -5,6 +5,7 @@ import de.thws.adapter.in.api.dto.UserDTO;
 import de.thws.adapter.in.api.mapper.UserMapper;
 import de.thws.domain.port.in.LoadUserUseCase;
 import io.quarkus.hal.HalEntityWrapper;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -15,22 +16,23 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("users")
+@ApplicationScoped
 public class UserController {
 
     @Inject
-    LoadUserUseCase loadUserUseCase;
+    private LoadUserUseCase loadUserUseCase;
 
-    private UserMapper mapper = new UserMapper( );
+    private UserMapper userMapper = new UserMapper( );
 
     @Path("{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getUser(@PathParam("id") long id) {
+    public Response getUserById(@PathParam("id") long id) {
         final var domainUser = loadUserUseCase.loadUserById(id);
         if (domainUser == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        final var apiUser = this.mapper.mapToApiModel(domainUser);
+        final var apiUser = this.userMapper.mapToApiModel(domainUser);
         HalEntityWrapper<UserDTO> result = new HalEntityWrapper<>(apiUser);
         Link selfLink = Link.fromUri("/users/" + id)
                 .rel("self")

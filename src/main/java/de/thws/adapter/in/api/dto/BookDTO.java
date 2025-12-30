@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@XmlRootElement
+
 @Data
 public class BookDTO {
     @PositiveOrZero
