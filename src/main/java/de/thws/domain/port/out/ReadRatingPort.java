@@ -5,6 +5,6 @@ import de.thws.domain.model.Rating;
 import java.util.List;
 
 public interface ReadRatingPort {
-    Rating readRating(String id);
+    Rating readRatingById(String id);
     List<Rating> readAllRatings();
 }

@@ -1,4 +1,4 @@
-package de.thws.adapter.out.db.repository;
+package de.thws.adapter.out.persistance.repository;
 
 import de.thws.domain.model.Rating;
 import de.thws.domain.port.out.DeleteRatingPort;
@@ -21,7 +21,7 @@ public class RatingPersistenceAdapter implements DeleteRatingPort, UpdateRatingP
     }
 
     @Override
-    public Rating readRating(String id) {
+    public Rating readRatingById(String id) {
         return null;
     }
 

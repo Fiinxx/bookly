@@ -1,4 +1,4 @@
-package de.thws.domain.Service;
+package de.thws.domain.service;
 
 public class UpdateUserService {
 }

@@ -1,4 +1,4 @@
-package de.thws.adapter.out.db.entities;
+package de.thws.adapter.out.persistance.entities;
 
 import de.thws.domain.model.Rating;
 import jakarta.persistence.*;
@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +15,11 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BookJpaEntity {
 
-@Id
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String isbn;
     private String title;
     private String author;
@@ -25,6 +30,8 @@ public class BookJpaEntity {
     private String language;
     private String description;
     private String publishingDate;
-    private List<Rating> ratings;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RatingJpaEntity> ratings = new ArrayList<>();
 
 }
