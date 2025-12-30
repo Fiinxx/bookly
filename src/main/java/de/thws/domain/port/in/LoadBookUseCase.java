@@ -7,5 +7,5 @@ import java.util.List;
 public interface LoadBookUseCase {
 
     List<Book> loadAllBooks();
-    Book loadBookbyId(String id);
+    Book loadBookbyId(Long id);
 }

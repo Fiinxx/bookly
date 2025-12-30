@@ -3,7 +3,7 @@ package de.thws.adapter.out.persistance.entities;
 import de.thws.domain.model.Rating;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "books")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@NoArgsConstructor()
 public class BookJpaEntity {
 
     @Id

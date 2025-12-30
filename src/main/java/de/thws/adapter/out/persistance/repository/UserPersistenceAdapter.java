@@ -1,6 +1,5 @@
 package de.thws.adapter.out.persistance.repository;
 
-import de.thws.domain.model.Rating;
 import de.thws.domain.model.User;
 import de.thws.domain.port.out.DeleteUserPort;
 import de.thws.domain.port.out.PersistUserPort;

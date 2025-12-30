@@ -1,14 +1,13 @@
 package de.thws.adapter.out.persistance.entities;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "ratings")
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Data
+@NoArgsConstructor()
 public class RatingJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

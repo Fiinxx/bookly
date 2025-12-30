@@ -3,7 +3,7 @@ package de.thws.adapter.out.persistance.entities;
 import de.thws.domain.model.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;

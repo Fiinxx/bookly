@@ -7,5 +7,5 @@ import java.util.List;
 public interface LoadRatingUseCase {
 
     List<Rating> loadAllRatings();
-    Rating loadRatingById(String id);
+    Rating loadRatingById(Long id);
 }
