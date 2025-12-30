@@ -7,6 +7,7 @@ import java.util.List;
 
 
 @Data
+@RequiredArgsConstructor
 public class Book {
     private long id;
     private String isbn;
