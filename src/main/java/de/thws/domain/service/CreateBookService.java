@@ -23,8 +23,4 @@ public class CreateBookService  implements CreateBookUseCase {
 
     }
 
-    @Override
-    public void addByISBN(String isbn) {
-
-    }
 }

@@ -1,6 +1,6 @@
 package de.thws.adapter.in.api.controller;
 
-import de.thws.adapter.in.api.dto.BookDTO;
+import de.thws.adapter.in.api.dto.BookDtos;
 import de.thws.adapter.in.api.mapper.BookMapper;
 import de.thws.domain.port.in.CreateBookUseCase;
 import de.thws.domain.port.in.LoadBookUseCase;
@@ -9,7 +9,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.MediaType;
@@ -28,7 +27,8 @@ public class BookController {
     @Inject
     private CreateBookUseCase createBookUseCase;
 
-    BookMapper bookMapper = new BookMapper();
+    @Inject
+    private BookMapper bookMapper;
 
     @Path("{id}")
     @GET
@@ -38,8 +38,8 @@ public class BookController {
         if (domainBook == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        final var apiBook = bookMapper.mapToApiModel(domainBook);
-        HalEntityWrapper<BookDTO> result = new HalEntityWrapper<>(apiBook);
+        final var apiBook = bookMapper.toDetail(domainBook);
+        HalEntityWrapper<BookDtos.Detail> result = new HalEntityWrapper<>(apiBook);
         Link selflink = Link.fromUri("/books/" + id)
                 .rel("self")
                 .build();
@@ -49,14 +49,14 @@ public class BookController {
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createBook(@Valid BookDTO bookDTO) {
-        final var domainBook = this.bookMapper.mapToDomainModel(bookDTO);
+    public Response createBook(@Valid BookDtos.Create dto) {
+        final var domainBook = this.bookMapper.toDomain(dto);
         this.createBookUseCase.createBook(domainBook);
-        final var apiBook = bookMapper.mapToApiModel(domainBook);
-        HalEntityWrapper<BookDTO> result = new HalEntityWrapper<>(apiBook);
+        final var apiBook = bookMapper.toDetail(domainBook);
+        HalEntityWrapper<BookDtos.Detail> result = new HalEntityWrapper<>(apiBook);
 
         URI selfUri = UriBuilder.fromResource(BookController.class)
-                .path(Long.toString(apiBook.getId()))
+                .path(Long.toString(apiBook.id()))
                 .build();
         Link selfLink = Link.fromUri(selfUri)
                 .rel("self")

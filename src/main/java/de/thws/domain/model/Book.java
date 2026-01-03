@@ -3,8 +3,6 @@ package de.thws.domain.model;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 
 @Data
 @RequiredArgsConstructor
@@ -20,5 +18,4 @@ public class Book {
     private String language;
     private String description;
     private String publishingDate;
-    private  List<Rating> ratings;
 }

@@ -2,7 +2,6 @@ package de.thws.adapter.in.api.controller;
 
 import de.thws.adapter.in.api.dto.RatingDTO;
 import de.thws.adapter.in.api.mapper.RatingMapper;
-import de.thws.domain.port.in.CreateRatingUseCase;
 import de.thws.domain.port.in.LoadRatingUseCase;
 import io.quarkus.hal.HalCollectionWrapper;
 import io.quarkus.hal.HalEntityWrapper;
@@ -15,7 +14,6 @@ import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,8 +23,8 @@ public class RatingController
 {
     @Inject
     private LoadRatingUseCase loadRatingUseCase;
-    @Inject
-    private CreateRatingUseCase createRatingUseCase;
+    //@Inject
+    //private CreateRatingUseCase createRatingUseCase;
 
 
     RatingMapper ratingMapper = new RatingMapper();

@@ -10,5 +10,4 @@ public interface CreateBookUseCase {
 
     void bulkAddBooks(List<Book> books);
 
-    void addByISBN(String isbn);
 }

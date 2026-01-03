@@ -1,6 +1,5 @@
 package de.thws.adapter.in.api.controller;
 
-import de.thws.adapter.in.api.dto.BookDTO;
 import de.thws.adapter.in.api.dto.UserDTO;
 import de.thws.adapter.in.api.mapper.UserMapper;
 import de.thws.domain.port.in.LoadUserUseCase;
