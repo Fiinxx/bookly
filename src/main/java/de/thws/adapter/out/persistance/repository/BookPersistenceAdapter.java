@@ -8,6 +8,7 @@ import de.thws.domain.port.out.DeleteBookPort;
 import de.thws.domain.port.out.PersistBookPort;
 import de.thws.domain.port.out.ReadBookPort;
 import de.thws.domain.port.out.UpdateBookPort;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class BookPersistenceAdapter implements PersistBookPort, DeleteBookPort, ReadBookPort, UpdateBookPort {
+public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>, PersistBookPort, DeleteBookPort, ReadBookPort, UpdateBookPort {
 
     private BookMapper bookMapper = new BookMapper();
 

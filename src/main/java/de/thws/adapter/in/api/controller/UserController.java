@@ -1,6 +1,6 @@
 package de.thws.adapter.in.api.controller;
 
-import de.thws.adapter.in.api.dto.UserDTO;
+import de.thws.adapter.in.api.dto.UserDtos;
 import de.thws.adapter.in.api.mapper.UserMapper;
 import de.thws.domain.port.in.LoadUserUseCase;
 import io.quarkus.hal.HalEntityWrapper;
@@ -21,7 +21,8 @@ public class UserController {
     @Inject
     private LoadUserUseCase loadUserUseCase;
 
-    private UserMapper userMapper = new UserMapper( );
+    @Inject
+    private UserMapper userMapper;
 
     @Path("{id}")
     @GET
@@ -31,8 +32,8 @@ public class UserController {
         if (domainUser == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        final var apiUser = this.userMapper.mapToApiModel(domainUser);
-        HalEntityWrapper<UserDTO> result = new HalEntityWrapper<>(apiUser);
+        final var apiUser = this.userMapper.toDetail(domainUser);
+        HalEntityWrapper<UserDtos.Detail> result = new HalEntityWrapper<>(apiUser);
         Link selfLink = Link.fromUri("/users/" + id)
                 .rel("self")
                 .build();

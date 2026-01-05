@@ -1,6 +1,7 @@
 package de.thws.adapter.in.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 
 
 public class BookDtos {
@@ -10,6 +11,7 @@ public class BookDtos {
             String isbn,
             String title,
             String author,
+            @PositiveOrZero
             int pagecount,
             String publisher,
             String genre,

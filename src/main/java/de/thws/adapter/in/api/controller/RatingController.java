@@ -1,6 +1,7 @@
 package de.thws.adapter.in.api.controller;
 
-import de.thws.adapter.in.api.dto.RatingDTO;
+
+import de.thws.adapter.in.api.dto.RatingDtos;
 import de.thws.adapter.in.api.mapper.RatingMapper;
 import de.thws.domain.port.in.LoadRatingUseCase;
 import io.quarkus.hal.HalCollectionWrapper;
@@ -26,8 +27,8 @@ public class RatingController
     //@Inject
     //private CreateRatingUseCase createRatingUseCase;
 
-
-    RatingMapper ratingMapper = new RatingMapper();
+    @Inject
+    RatingMapper ratingMapper;
 
     @Path("{id}")
     @GET
@@ -39,8 +40,8 @@ public class RatingController
         {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        final var apiRating = ratingMapper.mapToApiModel(domainRating);
-        HalEntityWrapper<RatingDTO> result = new HalEntityWrapper<>(apiRating);
+        final var apiRating = ratingMapper.toDetail(domainRating);
+        HalEntityWrapper<RatingDtos.Detail> result = new HalEntityWrapper<>(apiRating);
         Link selflink = Link.fromUri("/ratings/" + id)
                 .rel("self")
                 .build();
@@ -56,14 +57,14 @@ public class RatingController
     )
     {
         final var domainRatings = loadRatingUseCase.loadAllRatings();
-        final var apiRatings = ratingMapper.mapToApiModels(domainRatings);
+        final var apiRatings = ratingMapper.toDetails(domainRatings);
 
-        List<HalEntityWrapper<RatingDTO>> halEntities = apiRatings
+        List<HalEntityWrapper<RatingDtos.Detail>> halEntities = apiRatings
                 .stream()
                 .map(rating -> new HalEntityWrapper<>(rating))
                 .collect(Collectors.toList());
 
-        HalCollectionWrapper<RatingDTO> result = new HalCollectionWrapper<>(
+        HalCollectionWrapper<RatingDtos.Detail> result = new HalCollectionWrapper<>(
                 halEntities,
                 "ratings",
                 Link.fromUri("/ratings").rel("self").build());
