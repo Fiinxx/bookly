@@ -1,6 +1,8 @@
 package de.thws.adapter.out.persistance.repository;
 
+import de.thws.adapter.out.persistance.entities.BookJpaEntity;
 import de.thws.adapter.out.persistance.mapper.BookMapper;
+import de.thws.domain.exception.DuplicateEntityException;
 import de.thws.domain.model.Book;
 import de.thws.domain.port.out.DeleteBookPort;
 import de.thws.domain.port.out.PersistBookPort;
@@ -10,8 +12,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.hibernate.exception.ConstraintViolationException;
 
 import java.util.List;
+import java.util.Optional;
+
 @ApplicationScoped
 public class BookPersistenceAdapter implements PersistBookPort, DeleteBookPort, ReadBookPort, UpdateBookPort {
 
@@ -28,12 +33,14 @@ public class BookPersistenceAdapter implements PersistBookPort, DeleteBookPort, 
     @Transactional
     @Override
     public void persistBook(Book book) {
-
+        try {
             final var jpaBook = bookMapper.mapToJpaEntity(book);
             entityManager.persist(jpaBook);
+            entityManager.flush();
             book.setId(jpaBook.getId());
-
-
+        } catch (ConstraintViolationException e) {
+            throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
+        }
     }
 
     @Override
@@ -42,8 +49,10 @@ public class BookPersistenceAdapter implements PersistBookPort, DeleteBookPort, 
     }
 
     @Override
-    public Book readBookById(String id) {
-        return null;
+    public Optional<Book> readBookById(Long id) {
+        final var jpaBook = entityManager.find(BookJpaEntity.class, id);
+        return Optional.ofNullable(jpaBook).
+                map(bookMapper::mapToDomainModel);
     }
 
     @Override

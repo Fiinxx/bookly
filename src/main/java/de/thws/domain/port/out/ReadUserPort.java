@@ -3,8 +3,9 @@ package de.thws.domain.port.out;
 import de.thws.domain.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReadUserPort {
-    User readUserById(int id);
+    Optional<User> readUserById(Long id);
     List<User> readAllUsers();
 }

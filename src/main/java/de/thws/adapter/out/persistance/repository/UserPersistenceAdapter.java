@@ -7,6 +7,7 @@ import de.thws.domain.port.out.ReadUserPort;
 import de.thws.domain.port.out.UpdateUserPort;
 
 import java.util.List;
+import java.util.Optional;
 
 public class UserPersistenceAdapter implements DeleteUserPort, PersistUserPort, ReadUserPort,UpdateUserPort  {
 
@@ -21,7 +22,7 @@ public class UserPersistenceAdapter implements DeleteUserPort, PersistUserPort, 
     }
 
     @Override
-    public User readUserById(int id) {
+    public Optional<User> readUserById(Long id) {
         return null;
     }
 

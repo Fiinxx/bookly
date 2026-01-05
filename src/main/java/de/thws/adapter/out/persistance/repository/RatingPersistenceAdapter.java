@@ -7,6 +7,7 @@ import de.thws.domain.port.out.ReadRatingPort;
 import de.thws.domain.port.out.UpdateRatingPort;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RatingPersistenceAdapter implements DeleteRatingPort, UpdateRatingPort, PersistRatingPort, ReadRatingPort {
 
@@ -21,7 +22,7 @@ public class RatingPersistenceAdapter implements DeleteRatingPort, UpdateRatingP
     }
 
     @Override
-    public Rating readRatingById(String id) {
+    public Optional<Rating> readRatingById(Long id) {
         return null;
     }
 
