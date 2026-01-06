@@ -5,6 +5,7 @@ import de.thws.adapter.in.api.mapper.BookMapper;
 import de.thws.domain.port.in.CreateBookUseCase;
 import de.thws.domain.port.in.LoadBookUseCase;
 import io.quarkus.hal.HalEntityWrapper;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
@@ -49,6 +50,7 @@ public class BookController {
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
+    @RolesAllowed("ADMIN")
     public Response createBook(@Valid BookDtos.Create dto) {
         final var domainBook = this.bookMapper.toDomain(dto);
         this.createBookUseCase.createBook(domainBook);

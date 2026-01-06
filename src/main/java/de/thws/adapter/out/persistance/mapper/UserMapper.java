@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "jakarta", implementationName = "PersistenceUserMapperImpl")
 public interface UserMapper {
-    UserJpaEntity mapToJpaEntity(User user);
-    List<User> mapToDomainModels(List<UserJpaEntity> resultList );
-    User mapToDomainModel (UserJpaEntity jpaEntity);
+    UserJpaEntity toJpaEntity(User user);
+    List<User> toDomainModels(List<UserJpaEntity> resultList );
+    User toDomainModel (UserJpaEntity jpaEntity);
 }

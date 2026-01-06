@@ -13,7 +13,6 @@ public class UserDtos {
 
             @Email
             String email,
-            String password,
 
             @NotBlank
             @Pattern(regexp = "ADMIN|USER", message = "Role must be ADMIN or USER")

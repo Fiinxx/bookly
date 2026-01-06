@@ -29,9 +29,6 @@ public class UserController {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getUserById(@PathParam("id") long id) {
         final var domainUser = loadUserUseCase.loadUserById(id);
-        if (domainUser == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
         final var apiUser = this.userMapper.toDetail(domainUser);
         HalEntityWrapper<UserDtos.Detail> result = new HalEntityWrapper<>(apiUser);
         Link selfLink = Link.fromUri("/users/" + id)
@@ -39,7 +36,5 @@ public class UserController {
                 .build();
         result.addLinks(selfLink);
         return Response.ok(result).build();
-
-
     }
 }

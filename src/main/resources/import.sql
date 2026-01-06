@@ -1,6 +1,4 @@
--- This file allow to write SQL commands that will be emitted in test and dev.
--- The commands are commented as their support depends of the database
--- insert into myentity (id, field) values(1, 'field-1');
--- insert into myentity (id, field) values(2, 'field-2');
--- insert into myentity (id, field) values(3, 'field-3');
--- alter sequence myentity_seq restart with 4;
+-- default admin user pw: admin
+insert into users (id, password, role, username)
+VALUES (1, '$2y$10$jUHAszra9BeurVZ4P9GN0O3nYME.AkM3DcZdLDtEuFf4BD.SufdHu', 'ADMIN', 'admin');
+ALTER SEQUENCE users_id_seq RESTART WITH 2;

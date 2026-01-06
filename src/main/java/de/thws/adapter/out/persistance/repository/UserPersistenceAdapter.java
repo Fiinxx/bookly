@@ -1,15 +1,30 @@
 package de.thws.adapter.out.persistance.repository;
 
+
+import de.thws.adapter.out.persistance.entities.UserJpaEntity;
+import de.thws.adapter.out.persistance.mapper.RatingMapper;
+import de.thws.adapter.out.persistance.mapper.UserMapper;
 import de.thws.domain.model.User;
 import de.thws.domain.port.out.DeleteUserPort;
 import de.thws.domain.port.out.PersistUserPort;
 import de.thws.domain.port.out.ReadUserPort;
 import de.thws.domain.port.out.UpdateUserPort;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 import java.util.List;
 import java.util.Optional;
 
-public class UserPersistenceAdapter implements DeleteUserPort, PersistUserPort, ReadUserPort,UpdateUserPort  {
+@ApplicationScoped
+public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>, DeleteUserPort, PersistUserPort, ReadUserPort,UpdateUserPort  {
+
+    @Inject
+    UserMapper userMapper;
+
+    @Inject
+    private EntityManager entityManager;
 
     @Override
     public void deleteUser(User user) {
@@ -23,7 +38,9 @@ public class UserPersistenceAdapter implements DeleteUserPort, PersistUserPort, 
 
     @Override
     public Optional<User> readUserById(Long id) {
-        return null;
+        final var jpaUser = entityManager.find(UserJpaEntity.class, id);
+        return Optional.ofNullable(jpaUser).
+                map(userMapper::toDomainModel);
     }
 
     @Override
