@@ -21,7 +21,8 @@ import java.util.Optional;
 @ApplicationScoped
 public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>, PersistBookPort, DeleteBookPort, ReadBookPort, UpdateBookPort {
 
-    private BookMapper bookMapper = new BookMapper();
+    @Inject
+    BookMapper bookMapper;
 
     @Inject
     private EntityManager entityManager;
@@ -35,7 +36,7 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
     @Override
     public void persistBook(Book book) {
         try {
-            final var jpaBook = bookMapper.mapToJpaEntity(book);
+            final var jpaBook = bookMapper.toJpaEntity(book);
             entityManager.persist(jpaBook);
             entityManager.flush();
             book.setId(jpaBook.getId());
@@ -53,7 +54,7 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
     public Optional<Book> readBookById(Long id) {
         final var jpaBook = entityManager.find(BookJpaEntity.class, id);
         return Optional.ofNullable(jpaBook).
-                map(bookMapper::mapToDomainModel);
+                map(bookMapper::toDomainModel);
     }
 
     @Override

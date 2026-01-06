@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 
 import java.util.List;
 
-@Mapper(componentModel = "jakarta")
+@Mapper(componentModel = "jakarta", implementationName = "ApiUserMapperImpl")
 public interface UserMapper
 {
     UserDtos.Detail toDetail(User user);

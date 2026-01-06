@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 
-@Mapper(componentModel = "jakarta")
+@Mapper(componentModel = "jakarta", implementationName = "ApiRatingMapperImpl")
 public interface RatingMapper
 {
     RatingDtos.Detail toDetail(Rating rating);
