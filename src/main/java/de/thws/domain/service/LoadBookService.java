@@ -2,6 +2,7 @@ package de.thws.domain.service;
 
 import de.thws.domain.exception.EntityNotFoundException;
 import de.thws.domain.model.Book;
+import de.thws.domain.model.BookFilter;
 import de.thws.domain.port.in.LoadBookUseCase;
 import de.thws.domain.port.out.ReadBookPort;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,8 +16,8 @@ public class LoadBookService implements LoadBookUseCase {
     ReadBookPort readBookPort;
 
     @Override
-    public List<Book> loadAllBooks() {
-        return List.of();
+    public List<Book> loadAllBooks(BookFilter filter, int pageIndex, int pageSize) {
+        return readBookPort.readAllBooks(filter, pageIndex, pageSize);
     }
 
     @Override
