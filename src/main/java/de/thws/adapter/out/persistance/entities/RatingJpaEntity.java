@@ -21,7 +21,7 @@ public class RatingJpaEntity {
     private UserJpaEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "book_id")
     private BookJpaEntity book;
 
 }
