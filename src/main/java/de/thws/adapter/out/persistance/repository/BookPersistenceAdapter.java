@@ -10,7 +10,6 @@ import de.thws.domain.port.out.PersistBookPort;
 import de.thws.domain.port.out.ReadBookPort;
 import de.thws.domain.port.out.UpdateBookPort;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
-import io.quarkus.panache.common.Page;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -53,28 +52,30 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
     public List<Book> readAllBooks(BookFilter filter, int pageIndex, int pageSize) {
         StringBuilder query = new StringBuilder("1=1");
         Map<String, Object> params = new HashMap<>();
-        if (filter.getTitle() != null) {
+        if (filter.getTitle() != null && !filter.getTitle().isBlank()) {
             query.append(" AND lower(title) LIKE :title");
             params.put("title", "%" + filter.getTitle() + "%");
         }
-        if (filter.getAuthor() != null) {
+        if (filter.getAuthor() != null && !filter.getAuthor().isBlank()) {
             query.append(" AND lower(author) LIKE :author");
             params.put("author", "%" + filter.getAuthor() + "%");
         }
-        if (filter.getIsbn() != null) {
+        if (filter.getIsbn() != null && filter.getIsbn().isBlank()) {
             query.append(" AND lower(isbn) LIKE :isbn");
             params.put("isbn", "%" + filter.getIsbn() + "%");
         }
-        if (filter.getPublisher() != null) {
+        if (filter.getPublisher() != null && filter.getPublisher().isBlank()) {
             query.append(" AND lower(publisher) LIKE :publisher");
             params.put("publisher", "%" + filter.getPublisher() + "%");
         }
-        if (filter.getGenre() != null) {
+        if (filter.getGenre() != null && filter.getGenre().isBlank()) {
             query.append(" AND lower(genre) LIKE :genre");
             params.put("genre", "%" + filter.getGenre() + "%");
         }
 
-        final var jpaBooks = find(query.toString(), params).page(Page.of(pageIndex-1, pageSize)).list();
+        int startIndex = (pageIndex - 1) * pageSize;
+        int endIndex = startIndex + pageSize;
+        final var jpaBooks = find(query.toString(), params).range(startIndex, endIndex).list();
         return bookMapper.toDomainModels(jpaBooks);
     }
 

@@ -53,15 +53,13 @@ public class BookController {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getAllBooks(
             @BeanParam BookFilterDto filter,
-            @PositiveOrZero @DefaultValue( "0" ) @QueryParam( "page" ) int pageIndex,
+            @Positive @DefaultValue( "1" ) @QueryParam( "page" ) int pageIndex,
             @Positive @DefaultValue( "20" ) @QueryParam( "size" ) int pageSize,
             @Context UriInfo uriInfo
             ) {
         var criteria = this.bookMapper.toDomain(filter);
-        //peak +1 allows to check if last page
-        final var domainBooks = this.loadBookUseCase.loadAllBooks(criteria, pageIndex, pageSize+1);
+        final var domainBooks = this.loadBookUseCase.loadAllBooks(criteria, pageIndex, pageSize);
         final var apiBooks = this.bookMapper.toDetails(domainBooks);
-
         boolean hasNext = apiBooks.size() > pageSize;
         if (hasNext) {
             apiBooks.removeLast();
