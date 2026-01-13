@@ -2,17 +2,22 @@ package de.thws.adapter.in.api.controller;
 
 import de.thws.adapter.in.api.dto.UserDtos;
 import de.thws.adapter.in.api.mapper.UserMapper;
+import de.thws.domain.model.Role;
+import de.thws.domain.port.in.CreateUserUseCase;
 import de.thws.domain.port.in.LoadUserUseCase;
 import io.quarkus.hal.HalEntityWrapper;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.validation.Valid;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Link;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
+
+import java.net.URI;
 
 @Path("users")
 @ApplicationScoped
@@ -23,6 +28,9 @@ public class UserController {
 
     @Inject
     private UserMapper userMapper;
+
+    @Inject
+    private CreateUserUseCase createUserUseCase;
 
     @Path("{id}")
     @GET
@@ -37,4 +45,40 @@ public class UserController {
         result.addLinks(selfLink);
         return Response.ok(result).build();
     }
+
+    //Admin User Registration
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("Admin")
+    public Response createUser(@Valid UserDtos.Create userDto) {
+        final var domainUser = this.userMapper.toDomain(userDto);
+        this.createUserUseCase.createUser(domainUser);
+        final var apiUser = this.userMapper.toDetail(domainUser);
+        HalEntityWrapper<UserDtos.Detail> result = new HalEntityWrapper<>(apiUser);
+        URI selfUri = UriBuilder.fromResource(UserController.class)
+                .path(Long.toString(apiUser.id()))
+                .build();
+        result.addLinks(Link.fromUri(selfUri).rel("self").build());
+        return Response.created(selfUri).entity(result).build();
+    }
+
+    //PUBLIC User Registration
+    @POST
+    @Path("register")
+    @PermitAll
+    public Response registerUser(@Valid UserDtos.Create userDto) {
+        final var domainUser = this.userMapper.toDomain(userDto);
+        domainUser.setRole(Role.USER);
+        this.createUserUseCase.createUser(domainUser);
+        final var apiUser = this.userMapper.toDetail(domainUser);
+        HalEntityWrapper<UserDtos.Detail> result = new HalEntityWrapper<>(apiUser);
+        URI selfUri = UriBuilder.fromResource(UserController.class)
+                .path(Long.toString(apiUser.id()))
+                .build();
+        result.addLinks(Link.fromUri(selfUri).rel("self").build());
+        return Response.created(selfUri).entity(result).build();
+    }
+
+
 }

@@ -25,11 +25,10 @@ import java.util.Optional;
 public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>, PersistBookPort, DeleteBookPort, ReadBookPort, UpdateBookPort {
 
     @Inject
-    BookMapper bookMapper;
+    EntityManager entityManager;
 
     @Inject
-    private EntityManager entityManager;
-
+    BookMapper bookMapper;
 
     @Override
     public void deleteBook(Book book) {
@@ -40,8 +39,8 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
     public void persistBook(Book book) {
         try {
             final var jpaBook = bookMapper.toJpaEntity(book);
-            entityManager.persist(jpaBook);
-            entityManager.flush();
+            persist(jpaBook);
+            flush();
             book.setId(jpaBook.getId());
         } catch (ConstraintViolationException e) {
             throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
@@ -54,23 +53,23 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
         Map<String, Object> params = new HashMap<>();
         if (filter.getTitle() != null && !filter.getTitle().isBlank()) {
             query.append(" AND lower(title) LIKE :title");
-            params.put("title", "%" + filter.getTitle() + "%");
+            params.put("title", "%" + filter.getTitle().toLowerCase() + "%");
         }
         if (filter.getAuthor() != null && !filter.getAuthor().isBlank()) {
             query.append(" AND lower(author) LIKE :author");
-            params.put("author", "%" + filter.getAuthor() + "%");
+            params.put("author", "%" + filter.getAuthor().toLowerCase() + "%");
         }
-        if (filter.getIsbn() != null && filter.getIsbn().isBlank()) {
+        if (filter.getIsbn() != null && !filter.getIsbn().isBlank()) {
             query.append(" AND lower(isbn) LIKE :isbn");
             params.put("isbn", "%" + filter.getIsbn() + "%");
         }
-        if (filter.getPublisher() != null && filter.getPublisher().isBlank()) {
+        if (filter.getPublisher() != null && !filter.getPublisher().isBlank()) {
             query.append(" AND lower(publisher) LIKE :publisher");
-            params.put("publisher", "%" + filter.getPublisher() + "%");
+            params.put("publisher", "%" + filter.getPublisher().toLowerCase() + "%");
         }
-        if (filter.getGenre() != null && filter.getGenre().isBlank()) {
+        if (filter.getGenre() != null && !filter.getGenre().isBlank()) {
             query.append(" AND lower(genre) LIKE :genre");
-            params.put("genre", "%" + filter.getGenre() + "%");
+            params.put("genre", "%" + filter.getGenre().toLowerCase() + "%");
         }
 
         int startIndex = (pageIndex - 1) * pageSize;
@@ -81,13 +80,20 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
 
     @Override
     public Optional<Book> readBookById(Long id) {
-        final var jpaBook = entityManager.find(BookJpaEntity.class, id);
+        final var jpaBook = findById(id);
         return Optional.ofNullable(jpaBook).
                 map(bookMapper::toDomainModel);
     }
 
+    @Transactional
     @Override
     public void updateBook(Book book) {
-
+        try {
+            final var jpaBook = bookMapper.toJpaEntity(book);
+            entityManager.merge(jpaBook);
+            entityManager.flush();
+        }catch (ConstraintViolationException e) {
+            throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
+        }
     }
 }

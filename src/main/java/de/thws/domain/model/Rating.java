@@ -2,13 +2,15 @@ package de.thws.domain.model;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
+
 @Data
 @RequiredArgsConstructor
 public class Rating {
-    private long id;
+    private Long id;
     private int rating;
     private String comment;
-    private String creationTime;
+    private Instant creationTime;
 
 
 }

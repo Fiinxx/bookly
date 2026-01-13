@@ -3,8 +3,10 @@ package de.thws.adapter.in.api.controller;
 import de.thws.adapter.in.api.dto.BookDtos;
 import de.thws.adapter.in.api.dto.BookFilterDto;
 import de.thws.adapter.in.api.mapper.BookMapper;
+import de.thws.adapter.in.api.utils.PageUriBuilder;
 import de.thws.domain.port.in.CreateBookUseCase;
 import de.thws.domain.port.in.LoadBookUseCase;
+import de.thws.domain.port.in.UpdateBookUseCase;
 import io.quarkus.hal.HalCollectionWrapper;
 import io.quarkus.hal.HalEntityWrapper;
 import jakarta.annotation.security.RolesAllowed;
@@ -19,9 +21,14 @@ import jakarta.ws.rs.core.*;
 import java.net.URI;
 import java.util.List;
 
+import static de.thws.adapter.in.api.utils.PageUriBuilder.buildPageUri;
+
 @Path("books")
 @ApplicationScoped
 public class BookController {
+
+    @Inject
+    private UpdateBookUseCase updateBookUseCase;
 
     @Inject
     private LoadBookUseCase loadBookUseCase;
@@ -96,8 +103,8 @@ public class BookController {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @RolesAllowed("ADMIN")
-    public Response createBook(@Valid BookDtos.Create dto) {
-        final var domainBook = this.bookMapper.toDomain(dto);
+    public Response createBook(@Valid BookDtos.Create bookDto) {
+        final var domainBook = this.bookMapper.toDomain(bookDto);
         this.createBookUseCase.createBook(domainBook);
         final var apiBook = bookMapper.toDetail(domainBook);
         HalEntityWrapper<BookDtos.Detail> result = new HalEntityWrapper<>(apiBook);
@@ -113,15 +120,31 @@ public class BookController {
         return Response.created(selfUri).entity(result).build();
     }
 
-    // Helper
-    private URI buildPageUri(UriInfo uriInfo, int page, int size) {
-        return uriInfo.getRequestUriBuilder()
-                .replaceQueryParam("page", page)
-                .replaceQueryParam("size", size)
-                .scheme(null)
-                .host(null)
-                .port(-1)
+    @PUT
+    @Path("{id}")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @RolesAllowed("ADMIN")
+    public Response updateBook(
+            @Positive @PathParam( "id" ) long id,
+            @Valid BookDtos.Detail bookDto) {
+        final var domainBook = this.bookMapper.toDomain(bookDto);
+        domainBook.setId(id);
+        this.updateBookUseCase.updateBook(domainBook);
+        final var apiBook = bookMapper.toDetail(domainBook);
+        HalEntityWrapper<BookDtos.Detail> result = new HalEntityWrapper<>(apiBook);
+
+        URI selfUri = UriBuilder.fromResource(BookController.class)
+                .path(Long.toString(apiBook.id()))
                 .build();
+        Link selfLink = Link.fromUri(selfUri)
+                .rel("self")
+                .build();
+        result.addLinks(selfLink);
+
+        return Response.ok(result).build();
+
+    }
+
     }
 
     //@GET
@@ -129,4 +152,4 @@ public class BookController {
 
 
 
-}
+

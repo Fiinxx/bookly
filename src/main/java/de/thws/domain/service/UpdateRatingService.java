@@ -1,4 +1,20 @@
 package de.thws.domain.service;
 
-public class UpdateRatingService {
+import de.thws.domain.model.Rating;
+import de.thws.domain.port.in.UpdateRatingUseCase;
+import de.thws.domain.port.out.UpdateRatingPort;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+@ApplicationScoped
+public class UpdateRatingService implements UpdateRatingUseCase {
+
+    @Inject
+    UpdateRatingPort updateRatingPort;
+
+    @Override
+    public void updateRating(Rating rating) {
+        this.updateRatingPort.updateRating(rating);
+    }
 }
+

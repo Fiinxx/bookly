@@ -6,6 +6,18 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public class UserDtos {
+    public record Create(
+            String username,
+            @Email
+            String email,
+
+            @NotBlank
+            String password,
+
+            @NotBlank
+            @Pattern(regexp = "ADMIN|USER", message = "Role must be ADMIN or USER")
+            String role
+    ){};
     public record Detail(
             @PositiveOrZero
             long id,

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Entity
 @Table(name = "ratings")
 @Data
@@ -14,7 +16,7 @@ public class RatingJpaEntity {
     private Long id;
     int rating;
     String comment;
-    String creationTime;
+    Instant creationTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

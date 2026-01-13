@@ -16,5 +16,6 @@ public interface BookMapper
     BookDtos.Detail toDetail(Book book);
     List<BookDtos.Detail> toDetails(List<Book> books);
     BookFilter toDomain(BookFilterDto bookFilterDto);
+    Book toDomain(BookDtos.Detail request);
 }
 
