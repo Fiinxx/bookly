@@ -4,9 +4,11 @@ package de.thws.adapter.in.api.controller;
 import de.thws.adapter.in.api.dto.RatingDtos;
 import de.thws.adapter.in.api.dto.RatingFilterDto;
 import de.thws.adapter.in.api.mapper.RatingMapper;
-import de.thws.adapter.in.api.utils.PageUriBuilder;
+import de.thws.domain.model.Rating;
+import de.thws.domain.model.User;
 import de.thws.domain.port.in.CreateRatingUseCase;
 import de.thws.domain.port.in.LoadRatingUseCase;
+import de.thws.domain.port.in.LoadUserUseCase;
 import de.thws.domain.port.in.UpdateRatingUseCase;
 import io.quarkus.hal.HalCollectionWrapper;
 import io.quarkus.hal.HalEntityWrapper;
@@ -14,13 +16,12 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static de.thws.adapter.in.api.utils.PageUriBuilder.buildPageUri;
 
@@ -28,6 +29,9 @@ import static de.thws.adapter.in.api.utils.PageUriBuilder.buildPageUri;
 @ApplicationScoped
 public class RatingController
 {
+    @Inject
+    SecurityContext securityContext;
+
     @Inject
     private UpdateRatingUseCase updateRatingUseCase;
 
@@ -38,7 +42,13 @@ public class RatingController
     private CreateRatingUseCase createRatingUseCase;
 
     @Inject
+    private LoadUserUseCase loadUserUseCase;
+
+    @Inject
     RatingMapper ratingMapper;
+
+    @Context
+    UriInfo uriInfo;
 
     @Path("{id}")
     @GET
@@ -46,16 +56,7 @@ public class RatingController
     public Response getRatingById(@Positive @PathParam("id") long id)
     {
         final var domainRating = loadRatingUseCase.loadRatingById(id);
-        if(domainRating == null)
-        {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        final var apiRating = ratingMapper.toDetail(domainRating);
-        HalEntityWrapper<RatingDtos.Detail> result = new HalEntityWrapper<>(apiRating);
-        Link selflink = Link.fromUri("/ratings/" + id)
-                .rel("self")
-                .build();
-        result.addLinks(selflink);
+        HalEntityWrapper<RatingDtos.Detail> result = createRatingWrapper(domainRating);
         return Response.ok(result).build();
     }
     @GET
@@ -74,20 +75,8 @@ public class RatingController
         if (hasNext) {
             apiRatings.removeLast();
         }
-        List<HalEntityWrapper<RatingDtos.Detail>> halEntities = apiRatings.stream()
-                .map(rating -> {
-                    var wrapper = new HalEntityWrapper<>(rating);
-
-                    URI selfUri = uriInfo.getBaseUriBuilder()
-                            .path(RatingController.class)
-                            .path(Long.toString(rating.id()))
-                            .scheme(null).host(null).port(-1) // Strip host/port
-                            .build();
-
-                    wrapper.addLinks(Link.fromUri(selfUri).rel("self").build());
-
-                    return wrapper;
-                })
+        List<HalEntityWrapper<RatingDtos.Detail>> halEntities = domainRatings.stream()
+                .map(this::createRatingWrapper)
                 .toList();
 
         HalCollectionWrapper<RatingDtos.Detail> result = new HalCollectionWrapper<>(
@@ -102,22 +91,16 @@ public class RatingController
         return Response.ok(result).build();
     }
 
-
-    //TODO: user und book relation fehlt noch
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createRating(@Valid RatingDtos.Create ratingDto){
+    public Response createRating(@Valid RatingDtos.Create ratingDto) throws URISyntaxException {
+        String username = securityContext.getUserPrincipal().getName();
+        User user = loadUserUseCase.loadUserByUsername(username);
         final var domainRating = this.ratingMapper.toDomain(ratingDto);
+        domainRating.setUserId(user.getId());
         this.createRatingUseCase.createRating(domainRating);
-        final var apiRating = this.ratingMapper.toDetail(domainRating);
-        HalEntityWrapper<RatingDtos.Detail> result = new HalEntityWrapper<>(apiRating);
-        URI selfUri = UriBuilder.fromResource(RatingController.class)
-                .path(Long.toString(apiRating.id()))
-                .build();
-        Link selfLink = Link.fromUri(selfUri)
-                .rel("self")
-                .build();
-        result.addLinks(selfLink);
+        HalEntityWrapper<RatingDtos.Detail> result = createRatingWrapper(domainRating);
+        URI selfUri = new URI(result.getLinks().get("self").getHref());
         return Response.created(selfUri).entity(result).build();
     }
 
@@ -131,5 +114,42 @@ public class RatingController
         domainRating.setId(id);
         this.updateRatingUseCase.updateRating(domainRating);
         return Response.ok().build();
+    }
+
+    //HELPERS ---------------------
+
+    private HalEntityWrapper<RatingDtos.Detail> createRatingWrapper(Rating domainRating) {
+        var dto = ratingMapper.toDetail(domainRating);
+        var wrapper = new HalEntityWrapper<>(dto);
+
+        addLinks(wrapper, domainRating);
+        return wrapper;
+    }
+
+    private void addLinks(HalEntityWrapper<RatingDtos.Detail> wrapper, Rating rating) {
+        // 1. Self Link
+        URI selfUri = uriInfo.getBaseUriBuilder()
+                .path(RatingController.class)
+                .path(Long.toString(rating.getId()))
+                .build();
+        wrapper.addLinks(Link.fromUri(selfUri).rel("self").build());
+
+        // 2. Book Link
+        if (rating.getBookId() != null) {
+            URI bookUri = uriInfo.getBaseUriBuilder()
+                    .path(BookController.class)
+                    .path(Long.toString(rating.getBookId()))
+                    .build();
+            wrapper.addLinks(Link.fromUri(bookUri).rel("book").build());
+        }
+
+        // 3. User Link
+        if (rating.getUserId() != null) {
+            URI userUri = uriInfo.getBaseUriBuilder()
+                    .path(UserController.class)
+                    .path(Long.toString(rating.getUserId()))
+                    .build();
+            wrapper.addLinks(Link.fromUri(userUri).rel("user").build());
+        }
     }
 }

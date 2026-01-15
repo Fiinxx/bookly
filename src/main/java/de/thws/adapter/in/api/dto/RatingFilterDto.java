@@ -11,8 +11,11 @@ public class RatingFilterDto {
     @QueryParam("rating")
     private int rating;
 
-    @QueryParam("creationTime")
-    private Instant creationTime;
+    @QueryParam("createdAfter")
+    private Instant createdAfter;
+
+    @QueryParam("createdBefore")
+    private Instant createdBefore;
 
     @QueryParam("bookId")
     private Long bookId;

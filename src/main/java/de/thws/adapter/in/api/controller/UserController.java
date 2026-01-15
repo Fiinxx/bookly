@@ -12,10 +12,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Link;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.*;
 
 import java.net.URI;
 
@@ -50,7 +47,7 @@ public class UserController {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed("Admin")
+    @RolesAllowed("ADMIN")
     public Response createUser(@Valid UserDtos.Create userDto) {
         final var domainUser = this.userMapper.toDomain(userDto);
         this.createUserUseCase.createUser(domainUser);

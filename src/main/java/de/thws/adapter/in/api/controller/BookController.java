@@ -3,7 +3,6 @@ package de.thws.adapter.in.api.controller;
 import de.thws.adapter.in.api.dto.BookDtos;
 import de.thws.adapter.in.api.dto.BookFilterDto;
 import de.thws.adapter.in.api.mapper.BookMapper;
-import de.thws.adapter.in.api.utils.PageUriBuilder;
 import de.thws.domain.port.in.CreateBookUseCase;
 import de.thws.domain.port.in.LoadBookUseCase;
 import de.thws.domain.port.in.UpdateBookUseCase;
@@ -14,7 +13,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
 
@@ -44,9 +42,6 @@ public class BookController {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getBookById(@Positive @PathParam( "id" ) long id) {
         final var domainBook = this.loadBookUseCase.loadBookbyId(id);
-        if (domainBook == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
         final var apiBook = bookMapper.toDetail(domainBook);
         HalEntityWrapper<BookDtos.Detail> result = new HalEntityWrapper<>(apiBook);
         Link selflink = Link.fromUri("/books/" + id)

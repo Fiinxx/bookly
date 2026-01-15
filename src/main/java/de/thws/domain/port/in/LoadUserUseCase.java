@@ -8,4 +8,5 @@ public interface LoadUserUseCase {
 
     List<User> loadAllUsers();
     User loadUserById(Long id);
+    User loadUserByUsername(String username);
 }

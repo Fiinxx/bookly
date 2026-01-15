@@ -1,14 +1,9 @@
 package de.thws.adapter.in.api.mapper;
 
-import de.thws.adapter.in.api.dto.BookDtos;
-import de.thws.adapter.in.api.dto.BookFilterDto;
 import de.thws.adapter.in.api.dto.RatingDtos;
 import de.thws.adapter.in.api.dto.RatingFilterDto;
-import de.thws.domain.model.Book;
-import de.thws.domain.model.BookFilter;
 import de.thws.domain.model.Rating;
 import de.thws.domain.model.RatingFilter;
-import jakarta.validation.Valid;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

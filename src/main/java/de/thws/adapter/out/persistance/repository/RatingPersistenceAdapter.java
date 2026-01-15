@@ -1,10 +1,8 @@
 package de.thws.adapter.out.persistance.repository;
 
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import de.thws.adapter.out.persistance.entities.RatingJpaEntity;
 import de.thws.adapter.out.persistance.mapper.RatingMapper;
-import de.thws.domain.exception.BusinessRuleViolationException;
 import de.thws.domain.exception.DuplicateEntityException;
 import de.thws.domain.model.Rating;
 import de.thws.domain.model.RatingFilter;
@@ -48,7 +46,7 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
             flush();
             rating.setId(jpaRating.getId());
         } catch (ConstraintViolationException e) {
-            throw new DuplicateEntityException("Rating already exists");
+            throw new DuplicateEntityException("User has already rated this book.");
         }
     }
 
@@ -75,9 +73,13 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
             query.append(" AND user.id = :userId");
             params.put("userId", filter.getUserId());
         }
-        if (filter.getCreatingTime() != null) {
-            query.append(" AND creationTime = :creationTime");
-            params.put("creationTime", filter.getCreatingTime());
+        if (filter.getCreatedAfter() != null) {
+            query.append(" AND creationTime >= :createdAfter");
+            params.put("createdAfter", filter.getCreatedAfter());
+        }
+        if (filter.getCreatedBefore() != null) {
+            query.append(" AND creationTime <= :createdBefore");
+            params.put("createdBefore", filter.getCreatedBefore());
         }
         int startIndex = (pageIndex - 1) * pageSize;
         int endIndex = startIndex + pageSize;

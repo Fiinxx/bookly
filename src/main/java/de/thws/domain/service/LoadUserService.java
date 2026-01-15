@@ -24,4 +24,9 @@ public class LoadUserService implements LoadUserUseCase {
     public User loadUserById(Long id) {
         return readUserPort.readUserById(id).orElseThrow(() ->  new EntityNotFoundException("User with id " + id + " not found"));
     }
+
+    @Override
+    public User loadUserByUsername(String username) {
+        return readUserPort.readUserByUsername(username).orElseThrow(() ->  new EntityNotFoundException("User with name " + username + " not found"));
+    }
 }

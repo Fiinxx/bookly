@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface ReadUserPort {
     Optional<User> readUserById(Long id);
+    Optional<User> readUserByUsername(String username);
     List<User> readAllUsers();
 }

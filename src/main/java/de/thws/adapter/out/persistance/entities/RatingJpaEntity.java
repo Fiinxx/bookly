@@ -7,7 +7,10 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 @Entity
-@Table(name = "ratings")
+@Table(name = "ratings",
+uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "book_id"})
+})
 @Data
 @NoArgsConstructor()
 public class RatingJpaEntity {

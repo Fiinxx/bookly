@@ -6,6 +6,8 @@ import de.thws.domain.port.out.PersistRatingPort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
+import java.time.Instant;
+
 @ApplicationScoped
 public class CreateRatingService implements CreateRatingUseCase {
 
@@ -14,6 +16,7 @@ public class CreateRatingService implements CreateRatingUseCase {
 
     @Override
     public void createRating(Rating rating) {
+        rating.setCreationTime(Instant.now());
         this.persistRatingPort.persistRating(rating);
     }
 }
