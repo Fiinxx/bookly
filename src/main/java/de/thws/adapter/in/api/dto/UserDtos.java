@@ -17,7 +17,7 @@ public class UserDtos {
             @NotBlank
             @Pattern(regexp = "ADMIN|USER", message = "Role must be ADMIN or USER")
             String role
-    ){};
+    ){}
     public record Detail(
             @PositiveOrZero
             long id,
@@ -30,4 +30,11 @@ public class UserDtos {
             @Pattern(regexp = "ADMIN|USER", message = "Role must be ADMIN or USER")
             String role
     ){}
+    //due to security reasons it is not possible to update a users password and role
+    //here subressources should be used which we will not implement
+    public record Update(
+        String username,
+        String email
+    ){}
+
 }

@@ -1,4 +1,19 @@
 package de.thws.domain.service;
 
-public class DeleteUserService {
+import de.thws.domain.port.in.DeleteUserUseCase;
+import de.thws.domain.port.out.DeleteUserPort;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+@ApplicationScoped
+public class DeleteUserService implements DeleteUserUseCase {
+
+    @Inject
+    DeleteUserPort deleteUserPort;
+
+    @Override
+    public boolean deleteUserById(long id){
+        return deleteUserPort.deleteUserById(id);
+    }
+
 }

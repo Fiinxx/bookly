@@ -32,7 +32,9 @@ public class BookDtos {
             double price,
             String language,
             String description,
-            String publishingDate
+            String publishingDate,
+            double averageRating,
+            Long ratingCount
     ){}
 
 

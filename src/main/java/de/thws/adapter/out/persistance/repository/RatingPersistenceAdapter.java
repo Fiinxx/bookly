@@ -32,10 +32,6 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
     EntityManager entityManager;
 
 
-    @Override
-    public void deleteRating(Rating rating) {
-
-    }
 
     @Transactional
     @Override
@@ -93,6 +89,17 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
         final var jpaRating = ratingMapper.toJpaEntity(rating);
         entityManager.merge(jpaRating);
         entityManager.flush();
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteRatingById(long id){
+        RatingJpaEntity entity = findById(id);
+        if (entity == null) {
+            return false;
+        }
+        delete(entity);
+        return true;
     }
     }
 

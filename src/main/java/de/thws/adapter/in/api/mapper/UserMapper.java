@@ -14,6 +14,7 @@ public interface UserMapper
     List<UserDtos.Detail> toDetails(List<User> users);
     @Mapping(target = "id", ignore = true)
     User toDomain(UserDtos.Create request);
+    User toDomain(UserDtos.Update user);
 }
 
 

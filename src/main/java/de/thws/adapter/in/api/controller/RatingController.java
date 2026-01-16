@@ -6,13 +6,11 @@ import de.thws.adapter.in.api.dto.RatingFilterDto;
 import de.thws.adapter.in.api.mapper.RatingMapper;
 import de.thws.domain.model.Rating;
 import de.thws.domain.model.User;
-import de.thws.domain.port.in.CreateRatingUseCase;
-import de.thws.domain.port.in.LoadRatingUseCase;
-import de.thws.domain.port.in.LoadUserUseCase;
-import de.thws.domain.port.in.UpdateRatingUseCase;
+import de.thws.domain.port.in.*;
 import io.quarkus.hal.HalCollectionWrapper;
 import io.quarkus.hal.HalEntityWrapper;
 import jakarta.enterprise.context.ApplicationScoped;
+import de.thws.adapter.in.api.utils.SecurityCheck;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -45,7 +43,14 @@ public class RatingController
     private LoadUserUseCase loadUserUseCase;
 
     @Inject
-    RatingMapper ratingMapper;
+    private DeleteRatingUseCase deleteRatingUseCase;
+
+    @Inject
+    private RatingMapper ratingMapper;
+
+    @Inject
+    private SecurityCheck securityCheck;
+
 
     @Context
     UriInfo uriInfo;
@@ -102,18 +107,42 @@ public class RatingController
         HalEntityWrapper<RatingDtos.Detail> result = createRatingWrapper(domainRating);
         URI selfUri = new URI(result.getLinks().get("self").getHref());
         return Response.created(selfUri).entity(result).build();
-    }
 
+    }
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})
     public Response updateRating(
             @Positive @PathParam( "id" ) long id,
-            @Valid RatingDtos.Detail ratingDto){
+            @Valid RatingDtos.Create ratingDto){
+        Rating existingRating = loadRatingUseCase.loadRatingById(id);//also checks if rating exists
+        //Security check
+        String username = securityContext.getUserPrincipal().getName();
+        User user = loadUserUseCase.loadUserByUsername(username);
+        boolean isOwner = existingRating.getUserId().equals(user.getId());
+        if (!isOwner) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
         final var domainRating = this.ratingMapper.toDomain(ratingDto);
         domainRating.setId(id);
+        domainRating.setUserId(user.getId());//TODO: is this needed?
         this.updateRatingUseCase.updateRating(domainRating);
-        return Response.ok().build();
+        return Response.ok(createRatingWrapper(domainRating)).build();
+    }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response deleteRating(@PathParam("id") long id) {
+        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        boolean deleted = deleteRatingUseCase.deleteRatingById(id);
+        if (!deleted) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.noContent().build();
     }
 
     //HELPERS ---------------------

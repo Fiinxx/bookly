@@ -1,8 +1,6 @@
 package de.thws.adapter.out.persistance.entities;
 
-import de.thws.domain.model.Rating;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -33,5 +31,22 @@ public class BookJpaEntity {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RatingJpaEntity> ratings = new ArrayList<>();
+
+    public double getAverageRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+        return ratings.stream()
+                .mapToInt(RatingJpaEntity::getRating)
+                .average()
+                .orElse(0.0);
+    }
+
+    public Long getRatingCount() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0L;
+        }
+        return Integer.toUnsignedLong(ratings.size());
+    }
 
 }

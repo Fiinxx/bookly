@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 
+
+
 @Data
 @RequiredArgsConstructor
 public class Book {
@@ -18,4 +20,7 @@ public class Book {
     private String language;
     private String description;
     private String publishingDate;
+    private double averageRating;
+    private Long ratingCount;
+
 }

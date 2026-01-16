@@ -30,10 +30,7 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
     @Inject
     BookMapper bookMapper;
 
-    @Override
-    public void deleteBook(Book book) {
 
-    }
     @Transactional
     @Override
     public void persistBook(Book book) {
@@ -95,5 +92,15 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
         }catch (ConstraintViolationException e) {
             throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
         }
+    }
+    @Override
+    @Transactional
+    public boolean deleteBookById(long id){
+        BookJpaEntity entity = findById(id);
+        if (entity == null) {
+            return false;
+        }
+        delete(entity);
+        return true;
     }
 }

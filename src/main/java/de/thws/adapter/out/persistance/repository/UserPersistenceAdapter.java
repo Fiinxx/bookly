@@ -4,6 +4,7 @@ package de.thws.adapter.out.persistance.repository;
 import de.thws.adapter.out.persistance.entities.UserJpaEntity;
 import de.thws.adapter.out.persistance.mapper.UserMapper;
 import de.thws.domain.exception.DuplicateEntityException;
+import de.thws.domain.exception.EntityNotFoundException;
 import de.thws.domain.model.User;
 import de.thws.domain.port.out.DeleteUserPort;
 import de.thws.domain.port.out.PersistUserPort;
@@ -24,10 +25,6 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
     @Inject
     UserMapper userMapper;
 
-    @Override
-    public void deleteUser(User user) {
-
-    }
 
     @Transactional
     @Override
@@ -60,8 +57,30 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
         return List.of();
     }
 
+    @Transactional
     @Override
     public void updateUser(User user) {
+        try {
+            UserJpaEntity entity = findById(user.getId());
+            if (entity == null) {
+                throw new EntityNotFoundException("User not found");
+            }
+            userMapper.updateJpaFromDomain(user, entity);
+            flush();
 
+        } catch (ConstraintViolationException e) {
+            throw new DuplicateEntityException("Username or Email already exists");
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteUserById(long id){
+            UserJpaEntity entity = findById(id);
+            if (entity == null) {
+                return false;
+            }
+            delete(entity);
+            return true;
     }
 }
