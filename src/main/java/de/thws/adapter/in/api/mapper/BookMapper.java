@@ -13,6 +13,7 @@ public interface BookMapper
 {
     @Mapping(target = "id", ignore = true)
     Book toDomain(BookDtos.Create request);
+    List<Book> toDomains(List<BookDtos.Create> request);
     BookDtos.Detail toDetail(Book book);
     List<BookDtos.Detail> toDetails(List<Book> books);
     BookFilter toDomain(BookFilterDto bookFilterDto);

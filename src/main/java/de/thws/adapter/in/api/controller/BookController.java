@@ -18,6 +18,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+import java.io.StringReader;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -99,12 +102,31 @@ public class BookController {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @RolesAllowed("ADMIN")
-    public Response createBook(@Valid BookDtos.Create bookDto) throws URISyntaxException {
+    public Response createBook(@Valid BookDtos.Create bookDto) throws URISyntaxException {//TODO:get rid of this
         final var domainBook = this.bookMapper.toDomain(bookDto);
         this.createBookUseCase.createBook(domainBook);
         HalEntityWrapper<BookDtos.Detail> result = createBookWrapper(domainBook);
         URI selfUri = new URI(result.getLinks().get("self").getHref());
         return Response.created(selfUri).entity(result).build();
+    }
+
+    @POST
+    @Consumes("text/csv")
+    @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("ADMIN")
+    public Response createBooksFromCsv(String csvData){
+        List<BookDtos.Create> csvDtos = parseCsv(csvData);
+        List<Book> domainBooks = this.bookMapper.toDomains(csvDtos);
+        this.createBookUseCase.bulkAddBooks(domainBooks);
+        List<HalEntityWrapper<BookDtos.Detail>> halEntities = domainBooks.stream()
+                .map(this::createBookWrapper)
+                .toList();
+
+
+        HalCollectionWrapper<BookDtos.Detail> result = new HalCollectionWrapper<>(
+                halEntities,
+                "books");
+        return Response.ok(result).build();
     }
 
     @PUT
@@ -160,6 +182,18 @@ public class BookController {
                 Link.fromUri(ratingsUri)
                         .rel("ratings")
                         .build());
+    }
+
+    private List<BookDtos.Create> parseCsv(String csvData) {
+        try (StringReader reader = new StringReader(csvData)) {
+            CsvToBean<BookDtos.Create> csvReader = new CsvToBeanBuilder<BookDtos.Create>(reader)
+                    .withType(BookDtos.Create.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+            return csvReader.parse();
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid CSV format: " + e.getMessage());
+        }
     }
 }
 

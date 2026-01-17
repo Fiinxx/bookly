@@ -13,7 +13,6 @@ import de.thws.domain.port.out.UpdateBookPort;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -39,6 +38,21 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
             book.setId(jpaBook.getId());
         } catch (ConstraintViolationException e) {
             throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
+        }
+    }
+
+    @Transactional
+    @Override
+    public void persistBooks(List<Book> books) {
+        try {
+            for (Book book : books) {
+                final var jpaBook = bookMapper.toJpaEntity(book);
+                persist(jpaBook);
+                book.setId(jpaBook.getId());
+            }
+            flush();
+        }catch (ConstraintViolationException e) {
+            throw new DuplicateEntityException("Batch failed: One or more books already exist.");
         }
     }
 

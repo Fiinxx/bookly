@@ -10,7 +10,7 @@ import jakarta.inject.Inject;
 import java.util.List;
 
 @ApplicationScoped
-public class CreateBookService  implements CreateBookUseCase {
+public class CreateBookService implements CreateBookUseCase {
 
     @Inject
     PersistBookPort persistBookPort;
@@ -20,6 +20,18 @@ public class CreateBookService  implements CreateBookUseCase {
 
     @Override
     public void createBook(Book book) {
+        enrichBook(book);
+        this.persistBookPort.persistBook(book);
+    }
+
+    //Defensive adding strategy, if one fails, all fail
+    @Override
+    public void bulkAddBooks(List<Book> books) {
+        books.forEach(this::enrichBook);
+        this.persistBookPort.persistBooks(books);
+    }
+
+    private void enrichBook(Book book) {
         //check if book needs enrichment
         if (book.getTitle() == null || book.getTitle().isBlank()) {
             final var externalBook = fetchBookDetailsPort.fetchDetails(book.getIsbn());
@@ -34,12 +46,6 @@ public class CreateBookService  implements CreateBookUseCase {
                 book.setLanguage(book.getLanguage() != null ? book.getLanguage() : ext.getLanguage());
             }
         }
-        this.persistBookPort.persistBook(book);
-    }
-
-    @Override
-    public void bulkAddBooks(List<Book> books) {
-
     }
 
 

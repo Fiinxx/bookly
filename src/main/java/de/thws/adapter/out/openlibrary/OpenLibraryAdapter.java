@@ -6,11 +6,13 @@ import de.thws.domain.port.out.FetchBookDetailsPort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
 
+import java.util.List;
 import java.util.Optional;
 @ApplicationScoped
 public class OpenLibraryAdapter implements FetchBookDetailsPort {
-    /*
+        /*
         Comments: we know this mapping is not that good (lot of fields still empty and just weird things),
         eg first sentence is the description or just picking the first item.
         But due to time constraints we leaved this definitely not production ready implementation as it is because changing the
@@ -22,23 +24,23 @@ public class OpenLibraryAdapter implements FetchBookDetailsPort {
     @RestClient
     OpenLibraryClient client;
 
+    // Added logger
+    private static final Logger LOG = Logger.getLogger(OpenLibraryAdapter.class);
+
     @Override
     public Optional<Book> fetchDetails(String isbn) {
         try {
-            // 1. Call the API
             OpenLibraryResponse response = client.getBookByIsbn(isbn, "title,author_name,number_of_pages_median,publisher,first_sentence,first_publish_year");
 
-            // 2. Validate we actually got a result
             if (response.docs() == null || response.docs().isEmpty()) {
                 return Optional.empty();
             }
 
             Book book = responseToBook(isbn, response);
-
             return Optional.of(book);
 
         } catch (Exception e) {
-            // should be logged but is not due to reasons...
+            LOG.error("Failed to map OpenLibrary response for ISBN: " + isbn, e);
             return Optional.empty();
         }
     }
@@ -46,15 +48,29 @@ public class OpenLibraryAdapter implements FetchBookDetailsPort {
     private static Book responseToBook(String isbn, OpenLibraryResponse response) {
         OpenLibraryBookDto dto = response.docs().getFirst();
 
-        // 3. Map DTO to Domain Book
         Book book = new Book();
         book.setIsbn(isbn);
         book.setTitle(dto.title());
-        book.setPagecount(dto.numberOfPages());
-        book.setAuthor(dto.authors().getFirst());
-        book.setPublisher(dto.publishers().getFirst());
-        book.setDescription(dto.firstSentence().getFirst());
-        book.setPublishingDate(String.valueOf(dto.publishingYear()));
+        if (dto.numberOfPages() != 0) {
+            book.setPagecount(dto.numberOfPages());
+        }
+        if (hasItems(dto.authors())) {
+            book.setAuthor(dto.authors().getFirst());
+        }
+        if (hasItems(dto.publishers())) {
+            book.setPublisher(dto.publishers().getFirst());
+        }
+        if (hasItems(dto.firstSentence())) {
+            book.setDescription(dto.firstSentence().getFirst());
+        }
+        if (dto.publishingYear() != 0) {
+            book.setPublishingDate(String.valueOf(dto.publishingYear()));
+        }
         return book;
+    }
+
+    // Helper
+    private static boolean hasItems(List<?> list) {
+        return list != null && !list.isEmpty();
     }
 }
