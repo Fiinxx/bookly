@@ -13,8 +13,8 @@ public class UpdateRatingService implements UpdateRatingUseCase {
     UpdateRatingPort updateRatingPort;
 
     @Override
-    public void updateRating(Rating rating) {
-        this.updateRatingPort.updateRating(rating);
+    public Rating updateRating(Rating rating) {
+        return this.updateRatingPort.updateRating(rating);
     }
 }
 

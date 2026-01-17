@@ -14,8 +14,8 @@ public class UpdateBookService implements UpdateBookUseCase {
     UpdateBookPort updateBookPort;
 
     @Override
-    public void updateBook(Book book) {
-        this.updateBookPort.updateBook(book);
+    public Book updateBook(Book book) {
+        return this.updateBookPort.updateBook(book);
     }
 
 }

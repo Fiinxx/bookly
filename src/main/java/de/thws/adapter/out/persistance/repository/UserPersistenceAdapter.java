@@ -59,7 +59,7 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
 
     @Transactional
     @Override
-    public void updateUser(User user) {
+    public User updateUser(User user) {
         try {
             UserJpaEntity entity = findById(user.getId());
             if (entity == null) {
@@ -67,7 +67,7 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
             }
             userMapper.updateJpaFromDomain(user, entity);
             flush();
-
+            return userMapper.toDomainModel(entity);
         } catch (ConstraintViolationException e) {
             throw new DuplicateEntityException("Username or Email already exists");
         }

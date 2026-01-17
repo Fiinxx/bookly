@@ -4,5 +4,5 @@ import de.thws.domain.model.Rating;
 
 public interface UpdateRatingUseCase {
 
-    void updateRating(Rating rating);
+    Rating updateRating(Rating rating);
 }

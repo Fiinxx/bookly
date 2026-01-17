@@ -4,5 +4,5 @@ import de.thws.domain.model.User;
 
 public interface UpdateUserUseCase {
 
-    void updateUser(User user);
+    User updateUser(User user);
 }

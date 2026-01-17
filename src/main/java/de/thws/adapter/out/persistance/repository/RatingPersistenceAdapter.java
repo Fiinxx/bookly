@@ -4,6 +4,7 @@ package de.thws.adapter.out.persistance.repository;
 import de.thws.adapter.out.persistance.entities.RatingJpaEntity;
 import de.thws.adapter.out.persistance.mapper.RatingMapper;
 import de.thws.domain.exception.DuplicateEntityException;
+import de.thws.domain.exception.EntityNotFoundException;
 import de.thws.domain.model.Rating;
 import de.thws.domain.model.RatingFilter;
 import de.thws.domain.port.out.DeleteRatingPort;
@@ -27,11 +28,6 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
 
     @Inject
     RatingMapper ratingMapper;
-
-    @Inject
-    EntityManager entityManager;
-
-
 
     @Transactional
     @Override
@@ -85,10 +81,14 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
 
     @Transactional
     @Override
-    public void updateRating(Rating rating) {
-        final var jpaRating = ratingMapper.toJpaEntity(rating);
-        entityManager.merge(jpaRating);
-        entityManager.flush();
+    public Rating updateRating(Rating rating) {
+            RatingJpaEntity entity = findById(rating.getId());
+            if (entity == null) {
+                throw new EntityNotFoundException("Rating not found");
+            }
+            ratingMapper.updateJpaFromDomain(rating, entity);
+            flush();
+            return ratingMapper.toDomainModel(entity);
     }
 
     @Override

@@ -8,6 +8,7 @@ import io.quarkus.security.jpa.Username;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class UserJpaEntity {
     }
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<RatingJpaEntity> ratings = new ArrayList<>();
 
 }

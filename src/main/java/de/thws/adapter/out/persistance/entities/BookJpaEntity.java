@@ -3,6 +3,7 @@ package de.thws.adapter.out.persistance.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class BookJpaEntity {
     private String publishingDate;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<RatingJpaEntity> ratings = new ArrayList<>();
 
     public double getAverageRating() {

@@ -8,6 +8,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.List;
 
@@ -25,6 +26,12 @@ public abstract class RatingMapper
     @Mapping(target = "bookId", source = "book.id")
     public abstract Rating toDomainModel(RatingJpaEntity jpaEntity);
 
+    @Mapping(target = "id", ignore = true)           // ID never changes
+    @Mapping(target = "creationTime", ignore = true) // Creation time is immutable
+    @Mapping(target = "user", ignore = true)         // You cannot change WHO wrote the rating
+    @Mapping(target = "book", ignore = true)         // You cannot change WHICH book is rated
+    public abstract void updateJpaFromDomain(Rating rating, @MappingTarget RatingJpaEntity entity);
+
     UserJpaEntity userFromId(Long id) {
         if (id == null) return null;
         return entityManager.getReference(UserJpaEntity.class, id);
@@ -34,4 +41,5 @@ public abstract class RatingMapper
         if (id == null) return null;
         return entityManager.getReference(BookJpaEntity.class, id);
     }
+
 }

@@ -3,6 +3,7 @@ package de.thws.adapter.out.persistance.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.Instant;
 
@@ -21,12 +22,15 @@ public class RatingJpaEntity {
     String comment;
     Instant creationTime;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private UserJpaEntity user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
+    @ToString.Exclude
     private BookJpaEntity book;
 
 }

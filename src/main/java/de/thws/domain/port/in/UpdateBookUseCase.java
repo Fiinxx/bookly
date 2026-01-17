@@ -4,5 +4,5 @@ import de.thws.domain.model.Book;
 
 public interface UpdateBookUseCase {
 
-    void updateBook(Book book);
+    Book updateBook(Book book);
 }

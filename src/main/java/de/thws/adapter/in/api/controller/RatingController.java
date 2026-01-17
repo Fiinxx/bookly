@@ -117,18 +117,11 @@ public class RatingController
             @Valid RatingDtos.Create ratingDto){
         Rating existingRating = loadRatingUseCase.loadRatingById(id);//also checks if rating exists
         //Security check
-        String username = securityContext.getUserPrincipal().getName();
-        User user = loadUserUseCase.loadUserByUsername(username);
-        boolean isOwner = existingRating.getUserId().equals(user.getId());
-        if (!isOwner) {
-            return Response.status(Response.Status.FORBIDDEN).build();
-        }
-
+        securityCheck.isAuthorized(securityContext, existingRating.getUserId());
         final var domainRating = this.ratingMapper.toDomain(ratingDto);
         domainRating.setId(id);
-        domainRating.setUserId(user.getId());//TODO: is this needed?
-        this.updateRatingUseCase.updateRating(domainRating);
-        return Response.ok(createRatingWrapper(domainRating)).build();
+        final var updatedDomainRating = this.updateRatingUseCase.updateRating(domainRating);
+        return Response.ok(createRatingWrapper(updatedDomainRating)).build();
     }
 
     @DELETE

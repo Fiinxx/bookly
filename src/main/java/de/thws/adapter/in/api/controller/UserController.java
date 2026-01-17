@@ -85,7 +85,6 @@ public class UserController {
         return Response.created(selfUri).entity(result).build();
     }
 
-    //TODO: Does not work (role etc gets set to null)
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})
@@ -98,9 +97,8 @@ public class UserController {
 
         final var domainUser = this.userMapper.toDomain(userDto);
         domainUser.setId(id);
-        this.updateUserUseCase.updateUser(domainUser);
-        final var apiUser = this.userMapper.toDetail(domainUser);
-        HalEntityWrapper<UserDtos.Detail> result = createUserWrapper(domainUser);
+        final var updatedDomainUser = this.updateUserUseCase.updateUser(domainUser);
+        HalEntityWrapper<UserDtos.Detail> result = createUserWrapper(updatedDomainUser);
         URI selfUri = new URI(result.getLinks().get("self").getHref());
         return Response.created(selfUri).entity(result).build();
     }
@@ -126,7 +124,6 @@ public class UserController {
         return wrapper;
     }
 
-    //Selflink
     private void addLinks(HalEntityWrapper<UserDtos.Detail> wrapper, User user) {
         // 1. Self Link
         URI selfUri = uriInfo.getBaseUriBuilder()

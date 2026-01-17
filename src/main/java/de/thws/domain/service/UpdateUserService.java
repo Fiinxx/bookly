@@ -13,7 +13,7 @@ public class UpdateUserService implements UpdateUserUseCase {
     private UpdateUserPort updateUserPort;
 
     @Override
-    public void updateUser(User user) {
-        this.updateUserPort.updateUser(user);
+    public User updateUser(User user) {
+        return this.updateUserPort.updateUser(user);
     }
 }

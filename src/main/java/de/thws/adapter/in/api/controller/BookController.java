@@ -113,14 +113,11 @@ public class BookController {
     @RolesAllowed("ADMIN")
     public Response updateBook(
             @Positive @PathParam("id") long id,
-            @Valid BookDtos.Detail bookDto) {
+            @Valid BookDtos.Create bookDto) {
         final var domainBook = this.bookMapper.toDomain(bookDto);
         domainBook.setId(id);
-        this.updateBookUseCase.updateBook(domainBook);
-        HalEntityWrapper<BookDtos.Detail> result = createBookWrapper(domainBook);
-
-
-        return Response.ok(result).build();
+        final var updatedDomainBook = this.updateBookUseCase.updateBook(domainBook);
+        return Response.ok( createBookWrapper(updatedDomainBook)).build();
     }
     @DELETE
     @Path("/{id}")

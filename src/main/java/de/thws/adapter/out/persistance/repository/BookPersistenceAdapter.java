@@ -3,6 +3,7 @@ package de.thws.adapter.out.persistance.repository;
 import de.thws.adapter.out.persistance.entities.BookJpaEntity;
 import de.thws.adapter.out.persistance.mapper.BookMapper;
 import de.thws.domain.exception.DuplicateEntityException;
+import de.thws.domain.exception.EntityNotFoundException;
 import de.thws.domain.model.Book;
 import de.thws.domain.model.BookFilter;
 import de.thws.domain.port.out.DeleteBookPort;
@@ -23,9 +24,6 @@ import java.util.Optional;
 
 @ApplicationScoped
 public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>, PersistBookPort, DeleteBookPort, ReadBookPort, UpdateBookPort {
-
-    @Inject
-    EntityManager entityManager;
 
     @Inject
     BookMapper bookMapper;
@@ -84,12 +82,16 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
 
     @Transactional
     @Override
-    public void updateBook(Book book) {
+    public Book updateBook(Book book) {
         try {
-            final var jpaBook = bookMapper.toJpaEntity(book);
-            entityManager.merge(jpaBook);
-            entityManager.flush();
-        }catch (ConstraintViolationException e) {
+            BookJpaEntity entity = findById(book.getId());
+            if (entity == null) {
+                throw new EntityNotFoundException("Book not found");
+            }
+            bookMapper.updateJpaFromDomain(book, entity);
+            flush();
+            return bookMapper.toDomainModel(entity);
+        } catch (ConstraintViolationException e) {
             throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
         }
     }
