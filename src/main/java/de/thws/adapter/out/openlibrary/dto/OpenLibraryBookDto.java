@@ -8,7 +8,20 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record OpenLibraryBookDto(
         String title,
-        @JsonProperty("number_of_pages") int numberOfPages,
+
+        @JsonProperty("author_name")
+        List<String> authors,
+
+        @JsonProperty("number_of_pages_median")
+        int numberOfPages, // Use Integer to handle nulls safely
+
+        @JsonProperty("publisher")
         List<String> publishers,
-        @JsonProperty("publish_date") String publishDate
+
+        @JsonProperty("first_sentence")
+        List<String> firstSentence,
+
+        @JsonProperty("first_publish_year")
+        int publishingYear
 ) {}
+// title,author_name,number_of_pages_median,first_sentence,first_publish_year
