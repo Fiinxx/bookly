@@ -4,6 +4,7 @@ import de.thws.adapter.in.api.dto.BookDtos;
 import de.thws.adapter.in.api.dto.BookFilterDto;
 import de.thws.adapter.in.api.mapper.BookMapper;
 import de.thws.domain.model.Book;
+import de.thws.domain.model.Role;
 import de.thws.domain.port.in.CreateBookUseCase;
 import de.thws.domain.port.in.LoadBookUseCase;
 import de.thws.domain.port.in.UpdateBookUseCase;
@@ -62,6 +63,13 @@ public class BookController {
     public Response getBookById(@Positive @PathParam("id") long id) {
         final var domainBook = this.loadBookUseCase.loadBookbyId(id);
         HalEntityWrapper<BookDtos.Detail> result = createBookWrapper(domainBook);
+        result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).build()).rel("collection").build());
+        result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).queryParam("bookId", id).build()).rel("rate").build());
+        if(securityContext.isUserInRole(Role.ADMIN.toString())) {
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).path(String.valueOf(id)).build()).rel("update").build());
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).path(String.valueOf(id)).build()).rel("delete").build());
+        }
+
         return Response.ok(result).build();
     }
 
@@ -90,11 +98,24 @@ public class BookController {
                 halEntities,
                 "books");
 
-        result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex, pageSize)).rel("self").build());
-
+        //LINKS
+        result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex, pageSize)).rel("self").build());//selfe
         if (pageIndex > 1)
-            result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex - 1, pageSize)).rel("prev").build());
-        if (hasNext) result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex + 1, pageSize)).rel("next").build());
+            result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex - 1, pageSize)).rel("prev").build());//prev
+        if (hasNext) result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex + 1, pageSize)).rel("next").build());//next
+        String searchHref = uriInfo.getBaseUriBuilder()
+                .path(BookController.class)
+                .build()
+                .toString() + "{?title,isbn,author,publisher,genre}";
+        result.addLinks(
+                Link.fromUri(searchHref)
+                        .rel("search")
+                        .build());//searchtemplate
+        if (securityContext.isUserInRole(Role.ADMIN.toString())){
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).build()).rel("create").type(MediaType.APPLICATION_JSON).build());//create
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).build()).rel("bulk-create").type("text/csv").build());//create
+        }
+
 
         return Response.ok(result).build();
     }

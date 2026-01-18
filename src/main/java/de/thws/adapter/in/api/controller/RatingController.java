@@ -5,6 +5,7 @@ import de.thws.adapter.in.api.dto.RatingDtos;
 import de.thws.adapter.in.api.dto.RatingFilterDto;
 import de.thws.adapter.in.api.mapper.RatingMapper;
 import de.thws.domain.model.Rating;
+import de.thws.domain.model.Role;
 import de.thws.domain.model.User;
 import de.thws.domain.port.in.*;
 import io.quarkus.hal.HalCollectionWrapper;
@@ -62,6 +63,16 @@ public class RatingController
     {
         final var domainRating = loadRatingUseCase.loadRatingById(id);
         HalEntityWrapper<RatingDtos.Detail> result = createRatingWrapper(domainRating);
+        result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).build()).rel("collection").build());
+
+        if(securityCheck.isAuthorized(securityContext, domainRating.getUserId())) {
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).path(String.valueOf(id)).build()).rel("update").build());
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).path(String.valueOf(id)).build()).rel("delete").build());
+        }
+        if(securityContext.isUserInRole(Role.ADMIN.toString())) {
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).path(String.valueOf(id)).build()).rel("delete").build());
+        }
+
         return Response.ok(result).build();
     }
     @GET
@@ -87,11 +98,19 @@ public class RatingController
         HalCollectionWrapper<RatingDtos.Detail> result = new HalCollectionWrapper<>(
                 halEntities,
                 "ratings");
-
+        //LINKS
         result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex, pageSize)).rel("self").build());
-
         if (pageIndex > 1) result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex - 1, pageSize)).rel("prev").build());
         if (hasNext) result.addLinks(Link.fromUri(buildPageUri(uriInfo, pageIndex + 1, pageSize)).rel("next").build());
+        result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).build()).rel("create").build());
+        String searchHref = uriInfo.getBaseUriBuilder()
+                .path(RatingController.class)
+                .build()
+                .toString() + "{?rating,createdAfter,createdBefore,bookId,userId}";
+        result.addLinks(
+                Link.fromUri(searchHref)
+                        .rel("search")
+                        .build());//searchtemplate
 
         return Response.ok(result).build();
     }

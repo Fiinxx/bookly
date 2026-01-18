@@ -56,6 +56,14 @@ public class UserController {
     public Response getUserById(@PathParam("id") long id) {
         final var domainUser = loadUserUseCase.loadUserById(id);
         HalEntityWrapper<UserDtos.Detail> result = createUserWrapper(domainUser);
+        //LINKS
+        if(securityCheck.isAuthorized(securityContext, id)) {
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(UserController.class).path(String.valueOf(id)).build()).rel("update").build());
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(UserController.class).path(String.valueOf(id)).build()).rel("delete").build());
+        }
+        if(securityContext.isUserInRole(Role.ADMIN.toString())) {
+            result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(UserController.class).path(String.valueOf(id)).build()).rel("delete").build());
+        }
         return Response.ok(result).build();
     }
 
