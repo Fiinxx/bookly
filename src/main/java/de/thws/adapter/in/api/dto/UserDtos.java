@@ -34,6 +34,7 @@ public class UserDtos {
     //here subressources should be used which we will not implement
     public record Update(
         String username,
+        @Email
         String email
     ){}
 

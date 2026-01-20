@@ -150,12 +150,11 @@ public class RatingController
         if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        boolean deleted = deleteRatingUseCase.deleteRatingById(id);
-        if (!deleted) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        deleteRatingUseCase.deleteRatingById(id);
+
         return Response.noContent().build();
     }
+
 
     //HELPERS ---------------------
 

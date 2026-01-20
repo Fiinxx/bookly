@@ -51,7 +51,7 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
                 book.setId(jpaBook.getId());
             }
             flush();
-        }catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             throw new DuplicateEntityException("Batch failed: One or more books already exist.");
         }
     }
@@ -109,14 +109,16 @@ public class BookPersistenceAdapter implements PanacheRepository<BookJpaEntity>,
             throw new DuplicateEntityException("Book with isbn " + book.getIsbn() + " already exists");
         }
     }
+
     @Override
     @Transactional
-    public boolean deleteBookById(long id){
+    public void deleteBookById(long id) {
         BookJpaEntity entity = findById(id);
         if (entity == null) {
-            return false;
+            throw new EntityNotFoundException("Book not found");
         }
         delete(entity);
-        return true;
     }
 }
+
+

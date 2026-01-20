@@ -12,7 +12,7 @@ public class DeleteBookService implements DeleteBookUseCase {
     DeleteBookPort deleteBookPort;
 
     @Override
-    public boolean deleteBookById(long id){
-        return deleteBookPort.deleteBookById(id);
+    public void deleteBookById(long id){
+        this.deleteBookPort.deleteBookById(id);
     }
 }

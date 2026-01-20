@@ -11,7 +11,7 @@ public class DeleteRatingService implements DeleteRatingUseCase {
     DeleteRatingPort deleteRatingPort;
 
     @Override
-    public boolean deleteRatingById(long id){
-        return deleteRatingPort.deleteRatingById(id);
+    public void deleteRatingById(long id){
+        this.deleteRatingPort.deleteRatingById(id);
     }
 }

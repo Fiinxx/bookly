@@ -118,10 +118,7 @@ public class UserController {
         if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        boolean deleted = deleteUserUseCase.deleteUserById(id);
-        if(!deleted){//TODO: replace by Exception
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        deleteUserUseCase.deleteUserById(id);
         return Response.noContent().build();
     }
     //HELPER ---------------------------------

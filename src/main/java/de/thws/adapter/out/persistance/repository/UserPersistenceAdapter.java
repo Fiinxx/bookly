@@ -75,12 +75,11 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
 
     @Override
     @Transactional
-    public boolean deleteUserById(long id){
+    public void deleteUserById(long id){
             UserJpaEntity entity = findById(id);
-            if (entity == null) {
-                return false;
-            }
-            delete(entity);
-            return true;
+        if (entity == null) {
+            throw new EntityNotFoundException("Book not found");
+        }
+        delete(entity);
     }
 }

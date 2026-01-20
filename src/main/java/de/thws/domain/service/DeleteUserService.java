@@ -12,8 +12,6 @@ public class DeleteUserService implements DeleteUserUseCase {
     DeleteUserPort deleteUserPort;
 
     @Override
-    public boolean deleteUserById(long id){
-        return deleteUserPort.deleteUserById(id);
-    }
+    public void deleteUserById(long id){ this.deleteUserPort.deleteUserById(id); }
 
 }

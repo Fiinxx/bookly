@@ -169,10 +169,7 @@ public class BookController {
         if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        boolean deleted = deleteBookUseCase.deleteBookById(id);
-        if (!deleted) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
+        deleteBookUseCase.deleteBookById(id);
         return Response.noContent().build();
     }
 
