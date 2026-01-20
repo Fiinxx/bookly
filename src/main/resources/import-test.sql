@@ -1,4 +1,4 @@
--- import only for developing
+-- import only for integration tests
 -- USERS
 -- Password for all users is admin
 INSERT INTO users (id, password, role, username, email)
