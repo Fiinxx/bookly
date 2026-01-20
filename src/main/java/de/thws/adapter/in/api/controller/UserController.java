@@ -53,27 +53,39 @@ public class UserController {
     @Path("{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getUserById(@PathParam("id") long id) {
+    public Response getUserById(@PathParam("id") long id, @Context Request request)
+    {
         final var domainUser = loadUserUseCase.loadUserById(id);
+        EntityTag etag = new EntityTag(Integer.toString(domainUser.hashCode()));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+        if (builder != null)
+        {
+            return builder.build();
+        }
         HalEntityWrapper<UserDtos.Detail> result = createUserWrapper(domainUser);
         //LINKS
-        if(securityCheck.isAuthorized(securityContext, id)) {
+        if(securityCheck.isAuthorized(securityContext, id))
+        {
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(UserController.class).path(String.valueOf(id)).build()).rel("update").build());
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(UserController.class).path(String.valueOf(id)).build()).rel("delete").build());
         }
-        if(securityContext.isUserInRole(Role.ADMIN.toString())) {
+        if(securityContext.isUserInRole(Role.ADMIN.toString()))
+        {
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(UserController.class).path(String.valueOf(id)).build()).rel("delete").build());
         }
-        return Response.ok(result).build();
+        return Response.ok(result).tag(etag).build();
     }
 
     //Admin User Registration
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("admins")
     @RolesAllowed("ADMIN")
-    public Response createUser(@Valid UserDtos.Create userDto) throws URISyntaxException {
+    public Response createUser(@Valid UserDtos.Create userDto) throws URISyntaxException
+    {
         final var domainUser = this.userMapper.toDomain(userDto);
+        domainUser.setRole(Role.ADMIN);
         this.createUserUseCase.createUser(domainUser);
         HalEntityWrapper<UserDtos.Detail> result = createUserWrapper(domainUser);
         URI selfUri = new URI(result.getLinks().get("self").getHref());
@@ -82,9 +94,11 @@ public class UserController {
 
     //PUBLIC User Registration
     @POST
-    @Path("register")
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     @PermitAll
-    public Response registerUser(@Valid UserDtos.Create userDto) throws URISyntaxException {
+    public Response registerUser(@Valid UserDtos.Create userDto) throws URISyntaxException
+    {
         final var domainUser = this.userMapper.toDomain(userDto);
         domainUser.setRole(Role.USER);
         this.createUserUseCase.createUser(domainUser);
@@ -96,10 +110,21 @@ public class UserController {
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     public Response updateUser(
             @Valid UserDtos.Update userDto,
-            @PathParam("id") long id) throws URISyntaxException {
-        if (!securityCheck.isAuthorized(securityContext, id)) {
+            @PathParam("id") long id,
+            @Context Request request) throws URISyntaxException
+    {
+        final var existingUser = this.loadUserUseCase.loadUserById(id);
+        EntityTag etag = new EntityTag(Integer.toString(existingUser.hashCode()));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+        if (builder != null)
+        {
+            return builder.build();
+        }
+        if (!securityCheck.isAuthorized(securityContext, id))
+        {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
@@ -108,28 +133,33 @@ public class UserController {
         final var updatedDomainUser = this.updateUserUseCase.updateUser(domainUser);
         HalEntityWrapper<UserDtos.Detail> result = createUserWrapper(updatedDomainUser);
         URI selfUri = new URI(result.getLinks().get("self").getHref());
-        return Response.created(selfUri).entity(result).build();
+        EntityTag newEtag = new EntityTag(Integer.toString(updatedDomainUser.hashCode()));
+        return Response.created(selfUri).entity(result).tag(newEtag).build();
     }
 
     @DELETE
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteUser(@PathParam("id") long id){
-        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
+    public Response deleteUser(@PathParam("id") long id)
+    {
+        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id))
+        {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         deleteUserUseCase.deleteUserById(id);
         return Response.noContent().build();
     }
     //HELPER ---------------------------------
-    private HalEntityWrapper<UserDtos.Detail> createUserWrapper(User domainUser) {
+    private HalEntityWrapper<UserDtos.Detail> createUserWrapper(User domainUser)
+    {
         var dto = userMapper.toDetail(domainUser);
         var wrapper = new HalEntityWrapper<>(dto);
         addLinks(wrapper, domainUser);
         return wrapper;
     }
 
-    private void addLinks(HalEntityWrapper<UserDtos.Detail> wrapper, User user) {
+    private void addLinks(HalEntityWrapper<UserDtos.Detail> wrapper, User user)
+    {
         // 1. Self Link
         URI selfUri = uriInfo.getBaseUriBuilder()
                 .path(UserController.class)

@@ -59,21 +59,29 @@ public class RatingController
     @Path("{id}")
     @GET
     @Produces( { MediaType.APPLICATION_JSON})
-    public Response getRatingById(@Positive @PathParam("id") long id)
+    public Response getRatingById(@Positive @PathParam("id") long id, @Context Request request)
     {
         final var domainRating = loadRatingUseCase.loadRatingById(id);
+        EntityTag etag = new EntityTag(Integer.toString(domainRating.hashCode()));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+        if (builder != null)
+        {
+            return builder.build();
+        }
         HalEntityWrapper<RatingDtos.Detail> result = createRatingWrapper(domainRating);
         result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).build()).rel("collection").build());
 
-        if(securityCheck.isAuthorized(securityContext, domainRating.getUserId())) {
+        if(securityCheck.isAuthorized(securityContext, domainRating.getUserId()))
+        {
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).path(String.valueOf(id)).build()).rel("update").build());
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).path(String.valueOf(id)).build()).rel("delete").build());
         }
-        if(securityContext.isUserInRole(Role.ADMIN.toString())) {
+        if(securityContext.isUserInRole(Role.ADMIN.toString()))
+        {
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).path(String.valueOf(id)).build()).rel("delete").build());
         }
 
-        return Response.ok(result).build();
+        return Response.ok(result).tag(etag).build();
     }
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -81,14 +89,14 @@ public class RatingController
             @BeanParam RatingFilterDto filter,
             @Positive @DefaultValue( "1" ) @QueryParam( "page" ) int pageIndex,
             @Positive @DefaultValue( "20" ) @QueryParam( "size" ) int pageSize,
-            @Context UriInfo uriInfo
-    )
+            @Context UriInfo uriInfo)
     {
         var criteria = this.ratingMapper.toDomain(filter);
         final var domainRatings = this.loadRatingUseCase.loadAllRatings(criteria, pageIndex, pageSize);
         final var apiRatings = this.ratingMapper.toDetails(domainRatings);
         boolean hasNext = apiRatings.size() > pageSize;
-        if (hasNext) {
+        if (hasNext)
+        {
             apiRatings.removeLast();
         }
         List<HalEntityWrapper<RatingDtos.Detail>> halEntities = domainRatings.stream()
@@ -112,12 +120,18 @@ public class RatingController
                         .rel("search")
                         .build());//searchtemplate
 
-        return Response.ok(result).build();
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(60);
+        cc.setPrivate(false);
+
+
+        return Response.ok(result).cacheControl(cc).build();
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createRating(@Valid RatingDtos.Create ratingDto) throws URISyntaxException {
+    public Response createRating(@Valid RatingDtos.Create ratingDto) throws URISyntaxException
+    {
         String username = securityContext.getUserPrincipal().getName();
         User user = loadUserUseCase.loadUserByUsername(username);
         final var domainRating = this.ratingMapper.toDomain(ratingDto);
@@ -133,21 +147,32 @@ public class RatingController
     @Consumes({MediaType.APPLICATION_JSON})
     public Response updateRating(
             @Positive @PathParam( "id" ) long id,
-            @Valid RatingDtos.Create ratingDto){
-        Rating existingRating = loadRatingUseCase.loadRatingById(id);//also checks if rating exists
+            @Valid RatingDtos.Create ratingDto,
+            @Context Request request)
+    {
+        final var existingRating = this.loadRatingUseCase.loadRatingById(id);
+        EntityTag etag = new EntityTag(Integer.toString(existingRating.hashCode()));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+        if (builder != null)
+        {
+            return builder.build();
+        }
         //Security check
         securityCheck.isAuthorized(securityContext, existingRating.getUserId());
         final var domainRating = this.ratingMapper.toDomain(ratingDto);
         domainRating.setId(id);
         final var updatedDomainRating = this.updateRatingUseCase.updateRating(domainRating);
-        return Response.ok(createRatingWrapper(updatedDomainRating)).build();
+        EntityTag newEtag = new EntityTag(Integer.toString(updatedDomainRating.hashCode()));
+        return Response.ok(createRatingWrapper(updatedDomainRating)).tag(newEtag).build();
     }
 
     @DELETE
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteRating(@PathParam("id") long id) {
-        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
+    public Response deleteRating(@PathParam("id") long id)
+    {
+        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id))
+        {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         deleteRatingUseCase.deleteRatingById(id);
@@ -158,7 +183,8 @@ public class RatingController
 
     //HELPERS ---------------------
 
-    private HalEntityWrapper<RatingDtos.Detail> createRatingWrapper(Rating domainRating) {
+    private HalEntityWrapper<RatingDtos.Detail> createRatingWrapper(Rating domainRating)
+    {
         var dto = ratingMapper.toDetail(domainRating);
         var wrapper = new HalEntityWrapper<>(dto);
 
@@ -166,7 +192,8 @@ public class RatingController
         return wrapper;
     }
 
-    private void addLinks(HalEntityWrapper<RatingDtos.Detail> wrapper, Rating rating) {
+    private void addLinks(HalEntityWrapper<RatingDtos.Detail> wrapper, Rating rating)
+    {
         // 1. Self Link
         URI selfUri = uriInfo.getBaseUriBuilder()
                 .path(RatingController.class)
@@ -175,7 +202,8 @@ public class RatingController
         wrapper.addLinks(Link.fromUri(selfUri).rel("self").build());
 
         // 2. Book Link
-        if (rating.getBookId() != null) {
+        if (rating.getBookId() != null)
+        {
             URI bookUri = uriInfo.getBaseUriBuilder()
                     .path(BookController.class)
                     .path(Long.toString(rating.getBookId()))
@@ -184,7 +212,8 @@ public class RatingController
         }
 
         // 3. User Link
-        if (rating.getUserId() != null) {
+        if (rating.getUserId() != null)
+        {
             URI userUri = uriInfo.getBaseUriBuilder()
                     .path(UserController.class)
                     .path(Long.toString(rating.getUserId()))

@@ -60,17 +60,25 @@ public class BookController {
     @Path("{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getBookById(@Positive @PathParam("id") long id) {
+    public Response getBookById(@Positive @PathParam("id") long id, @Context Request request)
+    {
         final var domainBook = this.loadBookUseCase.loadBookbyId(id);
+        EntityTag etag = new EntityTag(Integer.toString(domainBook.hashCode()));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+        if (builder != null)
+        {
+            return builder.build();
+        }
         HalEntityWrapper<BookDtos.Detail> result = createBookWrapper(domainBook);
         result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).build()).rel("collection").build());
         result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(RatingController.class).queryParam("bookId", id).build()).rel("rate").build());
-        if(securityContext.isUserInRole(Role.ADMIN.toString())) {
+        if(securityContext.isUserInRole(Role.ADMIN.toString()))
+        {
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).path(String.valueOf(id)).build()).rel("update").build());
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).path(String.valueOf(id)).build()).rel("delete").build());
         }
 
-        return Response.ok(result).build();
+        return Response.ok(result).tag(etag).build();
     }
 
     @GET
@@ -79,13 +87,14 @@ public class BookController {
             @BeanParam BookFilterDto filter,
             @Positive @DefaultValue("1") @QueryParam("page") int pageIndex,
             @Positive @DefaultValue("20") @QueryParam("size") int pageSize,
-            @Context UriInfo uriInfo
-    ) {
+            @Context UriInfo uriInfo)
+    {
         var criteria = this.bookMapper.toDomain(filter);
         final var domainBooks = this.loadBookUseCase.loadAllBooks(criteria, pageIndex, pageSize);
         final var apiBooks = this.bookMapper.toDetails(domainBooks);
         boolean hasNext = apiBooks.size() > pageSize;
-        if (hasNext) {
+        if (hasNext)
+        {
             apiBooks.removeLast();
         }
 
@@ -111,13 +120,17 @@ public class BookController {
                 Link.fromUri(searchHref)
                         .rel("search")
                         .build());//searchtemplate
-        if (securityContext.isUserInRole(Role.ADMIN.toString())){
+        if (securityContext.isUserInRole(Role.ADMIN.toString()))
+        {
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).build()).rel("create").type(MediaType.APPLICATION_JSON).build());//create
             result.addLinks(Link.fromUri(uriInfo.getBaseUriBuilder().path(BookController.class).build()).rel("bulk-create").type("text/csv").build());//create
         }
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(60);
+        cc.setPrivate(false);
 
 
-        return Response.ok(result).build();
+        return Response.ok(result).cacheControl(cc).build();
     }
 
     @POST
@@ -135,7 +148,8 @@ public class BookController {
     @Consumes("text/csv")
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("ADMIN")
-    public Response createBooksFromCsv(String csvData){
+    public Response createBooksFromCsv(String csvData)
+    {
         List<BookDtos.Create> csvDtos = parseCsv(csvData);
         List<Book> domainBooks = this.bookMapper.toDomains(csvDtos);
         this.createBookUseCase.bulkAddBooks(domainBooks);
@@ -156,17 +170,33 @@ public class BookController {
     @RolesAllowed("ADMIN")
     public Response updateBook(
             @Positive @PathParam("id") long id,
-            @Valid BookDtos.Create bookDto) {
+            @Valid BookDtos.Create bookDto,
+            @Context Request request)
+    {
+        //Lost Update Problem verhindern
+        final var existingBook = this.loadBookUseCase.loadBookbyId(id);
+        EntityTag etag = new EntityTag(Integer.toString(existingBook.hashCode()));
+        Response.ResponseBuilder builder = request.evaluatePreconditions(etag);
+        // Wenn builder nicht null ist, stimmen die Etags NICHT überein
+        if (builder != null)
+        {
+            // Gibt automatisch 412 Precondition Failed zurück
+            return builder.build();
+        }
+        //Updaten
         final var domainBook = this.bookMapper.toDomain(bookDto);
         domainBook.setId(id);
         final var updatedDomainBook = this.updateBookUseCase.updateBook(domainBook);
-        return Response.ok( createBookWrapper(updatedDomainBook)).build();
+        EntityTag newEtag = new EntityTag(Integer.toString(updatedDomainBook.hashCode()));
+        return Response.ok(createBookWrapper(updatedDomainBook)).tag(newEtag).build();
     }
     @DELETE
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public Response deleteBook(@PathParam("id") long id) {
-        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id)) {
+    public Response deleteBook(@PathParam("id") long id)
+    {
+        if (!securityCheck.isAuthorizedOrAdmin(securityContext, id))
+        {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         deleteBookUseCase.deleteBookById(id);
@@ -175,7 +205,8 @@ public class BookController {
 
 
     //HELPER ---------------------------------
-    private HalEntityWrapper<BookDtos.Detail> createBookWrapper(Book domainBook) {
+    private HalEntityWrapper<BookDtos.Detail> createBookWrapper(Book domainBook)
+    {
         var dto = bookMapper.toDetail(domainBook);
         var wrapper = new HalEntityWrapper<>(dto);
         addLinks(wrapper, domainBook);
@@ -183,7 +214,8 @@ public class BookController {
     }
 
     //Selflink
-    private void addLinks(HalEntityWrapper<BookDtos.Detail> wrapper, Book book) {
+    private void addLinks(HalEntityWrapper<BookDtos.Detail> wrapper, Book book)
+    {
         // 1. Self Link
         URI selfUri = uriInfo.getBaseUriBuilder()
                 .path(BookController.class)
@@ -202,22 +234,24 @@ public class BookController {
                         .build());
     }
 
-    private List<BookDtos.Create> parseCsv(String csvData) {
-        try (StringReader reader = new StringReader(csvData)) {
+    private List<BookDtos.Create> parseCsv(String csvData)
+    {
+        try (StringReader reader = new StringReader(csvData))
+        {
             CsvToBean<BookDtos.Create> csvReader = new CsvToBeanBuilder<BookDtos.Create>(reader)
                     .withType(BookDtos.Create.class)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
             return csvReader.parse();
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             throw new BadRequestException("Invalid CSV format: " + e.getMessage());
         }
     }
 }
 
 
-        //@GET
-    //@Produces({MediaType.APPLICATION_JSON})
+
 
 
 

@@ -24,16 +24,21 @@ public class DispatcherController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getApiRoot() {
+    public Response getApiRoot()
+    {
         var rootInfo = new ApiRoot("Bookly API", "1.0.0");
         var wrapper = new HalEntityWrapper<>(rootInfo);
 
         addLinks(wrapper);
+        CacheControl cc = new CacheControl();
+        cc.setMaxAge(60);
+        cc.setPrivate(false);
 
-        return Response.ok(wrapper).build();
+        return Response.ok(wrapper).cacheControl(cc).build();
     }
 
-    private void addLinks(HalEntityWrapper<ApiRoot> wrapper) {
+    private void addLinks(HalEntityWrapper<ApiRoot> wrapper)
+    {
         // self link
         wrapper.addLinks(Link.fromUri(uriInfo.getRequestUri()).rel("self").build());
 
@@ -50,14 +55,17 @@ public class DispatcherController {
         wrapper.addLinks(Link.fromUri(ratingsUri).rel("ratings").build());
 
         // Authenticated User Links
-        if (securityContext.getUserPrincipal() != null) {
+        if (securityContext.getUserPrincipal() != null)
+        {
             final var user = loadUserUseCase.loadUserByUsername(securityContext.getUserPrincipal().getName());
             URI meUri = uriInfo.getBaseUriBuilder()
                     .path(UserController.class)
                     .path(Long.toString(user.getId()))
                     .build();
             wrapper.addLinks(Link.fromUri(meUri).rel("me").build());
-        }else {
+        }
+        else
+        {
             URI registerUri = uriInfo.getBaseUriBuilder() //TODO: route gets removed remove here
                     .path(UserController.class)
                     .path("register")

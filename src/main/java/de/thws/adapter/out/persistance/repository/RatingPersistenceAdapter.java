@@ -96,7 +96,7 @@ public class RatingPersistenceAdapter implements PanacheRepository<RatingJpaEnti
     public void deleteRatingById(long id){
         RatingJpaEntity entity = findById(id);
         if (entity == null) {
-            throw new EntityNotFoundException("Book not found");
+            throw new EntityNotFoundException("Rating not found");
         }
         delete(entity);
     }

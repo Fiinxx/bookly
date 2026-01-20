@@ -78,7 +78,7 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
     public void deleteUserById(long id){
             UserJpaEntity entity = findById(id);
         if (entity == null) {
-            throw new EntityNotFoundException("Book not found");
+            throw new EntityNotFoundException("User not found");
         }
         delete(entity);
     }
