@@ -97,7 +97,7 @@ public class RatingController
         boolean hasNext = apiRatings.size() > pageSize;
         if (hasNext)
         {
-            apiRatings.removeLast();
+            domainRatings.removeLast();
         }
         List<HalEntityWrapper<RatingDtos.Detail>> halEntities = domainRatings.stream()
                 .map(this::createRatingWrapper)

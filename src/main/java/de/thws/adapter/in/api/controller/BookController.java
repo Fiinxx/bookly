@@ -95,7 +95,7 @@ public class BookController {
         boolean hasNext = apiBooks.size() > pageSize;
         if (hasNext)
         {
-            apiBooks.removeLast();
+            domainBooks.removeLast();
         }
 
         List<HalEntityWrapper<BookDtos.Detail>> halEntities = domainBooks.stream()
