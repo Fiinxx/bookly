@@ -23,8 +23,8 @@ public class UserJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Username
+    @Column(nullable = false, unique = true)
     private String username;
     private String email;
     @Password

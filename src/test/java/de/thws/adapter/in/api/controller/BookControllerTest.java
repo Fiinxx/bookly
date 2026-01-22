@@ -10,8 +10,8 @@ import static org.hamcrest.Matchers.*;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Order(2)
-class BookControllerTest {
+@Order(3)
+public class BookControllerTest {
 
 
     @Test

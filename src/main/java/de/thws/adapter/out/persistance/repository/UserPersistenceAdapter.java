@@ -32,6 +32,7 @@ public class UserPersistenceAdapter implements PanacheRepository<UserJpaEntity>,
         try{
             UserJpaEntity userJpaEntity = userMapper.toJpaEntity(user);
             persist(userJpaEntity);
+            flush();
             user.setId(userJpaEntity.getId());
         }catch (ConstraintViolationException e){
             throw new DuplicateEntityException("User with this username or email already exists");

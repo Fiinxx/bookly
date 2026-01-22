@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
 
 @QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Order(2)
+@Order(3)
 class RatingControllerTest {
 
     @Test
