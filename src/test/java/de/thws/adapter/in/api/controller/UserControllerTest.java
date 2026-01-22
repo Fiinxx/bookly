@@ -1,8 +1,6 @@
 package de.thws.adapter.in.api.controller;
 
 import de.thws.adapter.in.api.dto.UserDtos;
-import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -12,16 +10,15 @@ import org.junit.jupiter.api.TestMethodOrder;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.*;
 
-@QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Order(3)
-class UserControllerTest {
+public abstract class UserControllerTest {
 
     @Test
-    @TestSecurity(user = "admin", roles = {"ADMIN"})
     @Order(1)
     void getUserById_should_contain_correct_hyperlinks() {
         given()
+                .auth().preemptive().basic("admin", "admin") // Role: ADMIN
                 .accept(ContentType.JSON)
                 .when()
                 .pathParam("id", 1)
@@ -38,7 +35,6 @@ class UserControllerTest {
     }
 
     @Test
-    @TestSecurity(user = "admin", roles = {"ADMIN"})
     @Order(2)
     void getUserById_should_return_304_when_etag_matches() {
         //etag abrufen
@@ -47,6 +43,7 @@ class UserControllerTest {
                 .then().extract().header("Etag");
 
         given()
+                .auth().preemptive().basic("admin", "admin") // Role: ADMIN
                 .header("If-None-Match", etag)
                 .when()
                 .get("/users/1")
@@ -55,12 +52,12 @@ class UserControllerTest {
     }
 
     @Test
-    @TestSecurity(user = "admin", roles = {"ADMIN"})
     @Order(3)
     void updateUser_should_prevent_lost_update_with_etag() {
         UserDtos.Update updateDto = new UserDtos.Update("NewName", "test@example.com");
 
         given()
+                .auth().preemptive().basic("admin", "admin") // Role: ADMIN
                 .contentType(ContentType.JSON)
                 .header("If-Match", "\"veralteter-etag\"")
                 .body(updateDto)
@@ -72,12 +69,12 @@ class UserControllerTest {
 
 
     @Test
-    @TestSecurity(user = "alice", roles = {"USER"})
     @Order(4)
     void user_should_not_be_able_to_update_other_user() {
         UserDtos.Update updateDto = new UserDtos.Update("Hack", "hack@example.com");
 
         given()
+                .auth().preemptive().basic("alice", "admin") // Role: ADMIN
                 .contentType(ContentType.JSON)
                 .body(updateDto)
                 .when()
@@ -87,12 +84,12 @@ class UserControllerTest {
     }
 
     @Test
-    @TestSecurity(user = "admin", roles = {"ADMIN"})
     @Order(5)
     void admin_registration_should_only_be_allowed_for_admins() {
         UserDtos.Create adminDto = new UserDtos.Create("NewAdmin", "Pass@gmail.com", "Pass", "ADMIN");
 
         given()
+                .auth().preemptive().basic("admin", "admin") // Role: ADMIN
                 .contentType(ContentType.JSON)
                 .body(adminDto)
                 .when()
@@ -118,10 +115,10 @@ class UserControllerTest {
     }
 
     @Test
-    @TestSecurity(user = "admin", roles = {"ADMIN"})
-    @Order(7)
+    @Order(8)
     void deleteUser_should_return_204() {
         given()
+                .auth().preemptive().basic("admin", "admin") // Role: ADMIN
                 .when()
                 .delete("/users/1")
                 .then()
@@ -129,10 +126,10 @@ class UserControllerTest {
     }
 
     @Test
-    @TestSecurity(user = "admin", roles = {"ADMIN"})
-    @Order(8)
+    @Order(7)
     void getNonExistingUser_should_return_404() {
         given()
+                .auth().preemptive().basic("admin", "admin") // Role: ADMIN
                 .when()
                 .get("/users/9999")
                 .then()

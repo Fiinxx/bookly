@@ -1,6 +1,5 @@
 package de.thws.adapter.in.api.controller;
 
-import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -9,10 +8,9 @@ import org.junit.jupiter.api.TestMethodOrder;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@QuarkusTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Order(1)
-class RatingFilterTest {
+public abstract class RatingFilterTest {
 
     @Test
     void filter_by_bookId_1_should_return_clean_code_rating() {

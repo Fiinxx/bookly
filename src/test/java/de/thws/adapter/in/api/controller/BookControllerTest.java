@@ -1,17 +1,16 @@
 package de.thws.adapter.in.api.controller;
 
 import de.thws.adapter.in.api.dto.BookDtos;
-import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-@QuarkusTest
+
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Order(3)
-public class BookControllerTest {
+public abstract class BookControllerTest {
 
 
     @Test
