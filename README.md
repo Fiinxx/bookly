@@ -22,9 +22,20 @@ Das System folgt der hexagonalen Architektur, um die Geschäftslogik von externe
 
 ## Integrationstests starten 
 
-Gemäß den Prüfungsanforderungen können alle Integrationstests mit einem einzigen Befehl ausgeführt werden. Quarkus fährt hierbei automatisch die erforderliche Test-Infrastruktur (inkl. Datenbank) hoch.
+Gemäß den Prüfungsanforderungen können alle Integrationstests mit einem einzigen Befehl ausgeführt werden.
 
 Führen Sie im Projekt-Root-Verzeichnis folgenden Befehl aus:
 
 ```shell
 ./mvnw verify
+```
+
+### Manuelles starten
+
+```shell
+docker build -f src/main/docker/Dockerfile.jvm -t quarkus/bookly-jvm .
+```
+```shell
+docker run -i --rm -p 8080:8080 quarkus/bookly-jvm
+```
+
