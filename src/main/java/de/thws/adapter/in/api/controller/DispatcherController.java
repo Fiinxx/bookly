@@ -66,9 +66,8 @@ public class DispatcherController {
         }
         else
         {
-            URI registerUri = uriInfo.getBaseUriBuilder() //TODO: route gets removed remove here
+            URI registerUri = uriInfo.getBaseUriBuilder()
                     .path(UserController.class)
-                    .path("register")
                     .build();
             wrapper.addLinks(Link.fromUri(registerUri).rel("register").build());
         }

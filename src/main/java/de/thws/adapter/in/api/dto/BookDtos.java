@@ -61,27 +61,4 @@ public class BookDtos {
             double averageRating,
             Long ratingCount
     ){}
-
-
-//    private long id;
-//    private String isbn;
-//    private String title;
-//    private String author;
-//    private int pagecount;
-//    private String publisher;
-//    private String genre;
-//    private double price;
-//    private String language;
-//    private String description;
-//    private String publishingDate;
-//    private List<Rating> ratings;
-
-    // Request
-    //public record UpdateTitle(String newTitle) {}
-
-    // Response
-    //public record Detail(Long id, String title, String isbn, List<Rating> ratings) {}
-
-    // Response
-    //public record Summary(Long id, String title) {}
 }
