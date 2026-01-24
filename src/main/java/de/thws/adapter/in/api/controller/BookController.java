@@ -24,7 +24,6 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.StringReader;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import static de.thws.adapter.in.api.utils.PageUriBuilder.buildPageUri;
@@ -136,11 +135,11 @@ public class BookController {
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @RolesAllowed("ADMIN")
-    public Response createBook(@Valid BookDtos.Create bookDto) throws URISyntaxException {//TODO:get rid of this
+    public Response createBook(@Valid BookDtos.Create bookDto) {
         final var domainBook = this.bookMapper.toDomain(bookDto);
         this.createBookUseCase.createBook(domainBook);
         HalEntityWrapper<BookDtos.Detail> result = createBookWrapper(domainBook);
-        URI selfUri = new URI(result.getLinks().get("self").getHref());
+        URI selfUri = URI.create(result.getLinks().get("self").getHref());
         return Response.created(selfUri).entity(result).build();
     }
 
