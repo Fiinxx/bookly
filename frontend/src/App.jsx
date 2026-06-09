@@ -40,7 +40,7 @@ const translations = {
     themeAdjust: "Design anpassen",
     signIn: "Anmelden",
     signOut: "Abmelden",
-    searchPlaceholder: "Durchsuche Titel, Au{appLanguage === 'de' ? 'bis' : 'to'}ren oder ISBN-Referenzen...",
+    searchPlaceholder: "Suche nach Titel, Autor oder ISBN...",
     activeFilters: "Aktive Filter:",
     clearAll: "Alle löschen",
     filterHeader: "Katalog-Filter",
@@ -67,7 +67,7 @@ const translations = {
     needLoginToReviewDesc: "Bitte melde dich an oder registriere dich, um Rezensionen zu schreiben und Bücher zu bewerten.",
     loginOrRegister: "Anmelden / Registrieren",
     myReviewsHeader: "Meine Bewertungen",
-    myReviewsSub: "{translations[appLanguage].myReviewsSub}",
+    myReviewsSub: "Hier siehst du deine verfassten Rezensionen und persönliche Statistiken.",
     statWritten: "Geschriebene Bewertungen",
     statAvgRating: "Durchschnittliche Bewertung",
     statFavoriteGenre: "Lieblingsgenre",
@@ -130,7 +130,15 @@ const translations = {
     usernameTaken: "Benutzername oder E-Mail bereits vergeben",
     unauthorizedAdmin: "Admin-Rechte erforderlich",
     reviewAdded: "Bewertung erfolgreich hinzugefügt!",
-    reviewUpdated: "Bewertung erfolgreich aktualisiert!"
+    reviewUpdated: "Bewertung erfolgreich aktualisiert!",
+    metaIsbn: "ISBN-Referenz",
+    metaPrice: "Verkaufspreis",
+    metaPublisher: "Verlag",
+    metaPublishDate: "Veröffentlichungsdatum",
+    metaLanguage: "Sprache",
+    metaLength: "Umfang",
+    noDescription: "Keine Beschreibung vorhanden.",
+    pagesWord: "Seiten"
   },
   en: {
     exploreBooks: "Explore Books",
@@ -138,7 +146,7 @@ const translations = {
     settingsBooks: "Settings Books",
     themeAdjust: "Adjust appearance",
     signIn: "Sign In",
-    signOut: "{translations[appLanguage].signOut}",
+    signOut: "Sign Out",
     searchPlaceholder: "Search catalog titles, author, or ISBN references...",
     activeFilters: "Active Filters:",
     clearAll: "Clear all",
@@ -161,7 +169,7 @@ const translations = {
     submitReview: "Submit Review",
     updateReview: "Update Review",
     guestWarning: "Guest profile. Switch user role to review this book.",
-    noReviewsYet: "{translations[appLanguage].noReviewsYet}",
+    noReviewsYet: "No reviews written yet. Be the first to share your thoughts!",
     needLoginToReviewTitle: "Do you want to submit a review?",
     needLoginToReviewDesc: "Please log in or register to write reviews and rate books.",
     loginOrRegister: "Login / Register",
@@ -175,9 +183,9 @@ const translations = {
     needLoginReviewsTitle: "Authentication Required",
     needLoginReviewsDesc: "To see your personal reviews, read books, and reading stats, please sign in or create a new account.",
     loginRegisterBtn: "Sign in / Register now",
-    catalogControl: "{translations[appLanguage].catalogControl}",
-    catalogControlSub: "{translations[appLanguage].catalogControlSub}",
-    addNewBook: "{translations[appLanguage].addNewBook}",
+    catalogControl: "Catalog Repository Control",
+    catalogControlSub: "Inbound REST Controllers map use cases directly to JPA adapters. Secure writes are guarded by roles.",
+    addNewBook: "Add New Book",
     adminRequired: "(Admin credentials required to add or edit catalog records)",
     tableTitle: "Title",
     tableAuthor: "Author",
@@ -186,7 +194,7 @@ const translations = {
     tablePages: "Pages",
     tablePrice: "Price",
     tableActions: "Actions",
-    noRecords: "{translations[appLanguage].noRecords}",
+    noRecords: "No records in the database catalog. Create a book record to begin.",
     modifyBook: "Modify Book Record",
     addBookToRepo: "Add Book to Repository",
     bookTitle: "Book Title",
@@ -195,14 +203,14 @@ const translations = {
     bookPages: "Page Count",
     bookLanguage: "Language",
     bookDescription: "Description",
-    cancel: "{translations[appLanguage].cancel}",
-    saveChanges: "{translations[appLanguage].saveChanges}",
-    selectGenres: "{translations[appLanguage].selectGenres}",
+    cancel: "Cancel",
+    saveChanges: "Save Changes",
+    selectGenres: "Select Catalog Genres",
     filterGenres: "Filter genres...",
-    selectAuthors: "{translations[appLanguage].selectAuthors}",
+    selectAuthors: "Select Catalog Authors",
     filterAuthors: "Filter authors...",
-    applyFilters: "{translations[appLanguage].applyFilters}",
-    clearSelection: "{translations[appLanguage].clearSelection}",
+    applyFilters: "Apply Filters",
+    clearSelection: "Clear Selection",
     login: "Login",
     register: "Register",
     usernameOrEmail: "Username or Email",
@@ -229,7 +237,15 @@ const translations = {
     usernameTaken: "Username or Email already taken",
     unauthorizedAdmin: "Admin credentials required",
     reviewAdded: "Review added successfully!",
-    reviewUpdated: "Review updated successfully!"
+    reviewUpdated: "Review updated successfully!",
+    metaIsbn: "ISBN Reference",
+    metaPrice: "Store Price",
+    metaPublisher: "Publisher",
+    metaPublishDate: "Publish Date",
+    metaLanguage: "Language",
+    metaLength: "Length",
+    noDescription: "No description provided.",
+    pagesWord: "Pages"
   }
 };
 
@@ -1394,14 +1410,6 @@ function App() {
 
           {/* RIGHT SIDE PROFILE TRIGGER & COMMON DROPDOWN */}
           <div className="header-actions-group" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <button 
-              className="theme-toggle-btn"
-              onClick={() => setAppLanguage(appLanguage === 'de' ? 'en' : 'de')}
-              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--border-color)', padding: '0.4rem', borderRadius: '4px', cursor: 'pointer', background: 'var(--bg-input)', color: 'var(--text-primary)' }}
-              title={appLanguage === 'de' ? "Switch to English" : "Auf Deutsch umstellen"}
-            >
-              <Languages size={18} />
-            </button>
             {activeUser ? (
               <div className="header-profile-container" ref={dropdownRef}>
               <div 
@@ -1431,6 +1439,11 @@ function App() {
                     Appearance: {theme === 'dark' ? (appLanguage === 'de' ? 'Dunkel' : 'Dark') : (appLanguage === 'de' ? 'Hell' : 'Light')}
                   </button>
 
+                  <button className="profile-dropdown-item" onClick={() => setAppLanguage(appLanguage === 'de' ? 'en' : 'de')}>
+                    <Languages />
+                    Language: {appLanguage === 'de' ? 'Deutsch' : 'English'}
+                  </button>
+
                   <div className="profile-dropdown-divider"></div>
 
                   <button 
@@ -1452,9 +1465,17 @@ function App() {
               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                 <button 
                   className="theme-toggle-btn"
+                  onClick={() => setAppLanguage(appLanguage === 'de' ? 'en' : 'de')}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--border-color)', padding: '0.4rem', borderRadius: '4px', cursor: 'pointer', background: 'var(--bg-input)', color: 'var(--text-primary)' }}
+                  title={appLanguage === 'de' ? "Switch to English" : "Auf Deutsch umstellen"}
+                >
+                  <Languages size={18} />
+                </button>
+                <button 
+                  className="theme-toggle-btn"
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                   style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--border-color)', padding: '0.4rem', borderRadius: '4px', cursor: 'pointer', background: 'var(--bg-input)', color: 'var(--text-primary)' }}
-                  title="Design anpassen"
+                  title={appLanguage === 'de' ? "Design anpassen" : "Adjust appearance"}
                 >
                   {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
@@ -1489,34 +1510,34 @@ function App() {
                 <div className="book-detail-left-col">
                   <div className="book-detail-cover">
                     <span className="book-detail-badge-genre">{selectedBook.genre}</span>
-                    <span className="book-detail-price-tag">${selectedBook.price.toFixed(2)}</span>
+                    <span className="book-detail-price-tag">{appLanguage === 'de' ? `${selectedBook.price.toFixed(2)}€` : `$${selectedBook.price.toFixed(2)}`}</span>
                     <span className="book-detail-cover-art">{selectedBook.title.charAt(0)}</span>
                   </div>
 
                   <div className="detail-meta-grid" style={{ width: '100%' }}>
                     <div className="meta-item">
-                      <span className="meta-label">ISBN Reference</span>
+                      <span className="meta-label">{translations[appLanguage].metaIsbn}</span>
                       <span className="meta-value">{selectedBook.isbn}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">Store Price</span>
-                      <span className="meta-value" style={{ color: 'var(--success-color)' }}>${selectedBook.price.toFixed(2)}</span>
+                      <span className="meta-label">{translations[appLanguage].metaPrice}</span>
+                      <span className="meta-value" style={{ color: 'var(--success-color)' }}>{appLanguage === 'de' ? `${selectedBook.price.toFixed(2)}€` : `$${selectedBook.price.toFixed(2)}`}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">Publisher</span>
+                      <span className="meta-label">{translations[appLanguage].metaPublisher}</span>
                       <span className="meta-value">{selectedBook.publisher || "N/A"}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">Publish Date</span>
+                      <span className="meta-label">{translations[appLanguage].metaPublishDate}</span>
                       <span className="meta-value">{selectedBook.publishingDate || "N/A"}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">Language</span>
+                      <span className="meta-label">{translations[appLanguage].metaLanguage}</span>
                       <span className="meta-value">{selectedBook.language || "English"}</span>
                     </div>
                     <div className="meta-item">
-                      <span className="meta-label">Length</span>
-                      <span className="meta-value">{selectedBook.pagecount} Pages</span>
+                      <span className="meta-label">{translations[appLanguage].metaLength}</span>
+                      <span className="meta-value">{selectedBook.pagecount} {translations[appLanguage].pagesWord}</span>
                     </div>
                   </div>
                 </div>
@@ -1531,7 +1552,7 @@ function App() {
                   <div className="detail-title-section">
                     <span className="meta-label">{translations[appLanguage].synopsis}</span>
                     <p className="detail-desc" style={{ fontSize: '1.05rem', lineHeight: '1.7' }}>
-                      {selectedBook.description || "No description provided."}
+                      {selectedBook.description || translations[appLanguage].noDescription}
                     </p>
                   </div>
 
