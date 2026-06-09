@@ -1,0 +1,7 @@
+- [x] Explore Hub oben im header entfernen.
+- [x] Neuer Menüpunkt & Seite Meine Bewertungen, alle Bewertungen anzeigen, evtl paar statitiken wie lieblingsgenre oder avg bewertung, anzahl der bewertungen
+- [x] Sortierungsoptionen in Buch exploration
+- [x] Unnötige Satistken im Explore tab entfernen, wie total titles cached oder avg system rating und product genres, wtf. 
+- [x] Buch exploration hat standardmäßig sortierung nach top bewertet oder anzhl der bewertungen
+- [x] auch für authors muss more Authors stehen, 
+- [x] bitte nutze keine komischen gradients
