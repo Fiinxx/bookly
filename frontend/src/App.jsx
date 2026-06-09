@@ -250,8 +250,45 @@ function App() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [theme, setTheme] = useState('dark');
-  const [activeUser, setActiveUser] = useState(users[0]);
+  const [activeUser, setActiveUser] = useState(() => {
+    const saved = localStorage.getItem('bookly_active_user');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  const [usernameInput, setUsernameInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [registeredUsers, setRegisteredUsers] = useState(() => {
+    const saved = localStorage.getItem('bookly_registered_users');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return users;
+      }
+    }
+    return users;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('bookly_registered_users', JSON.stringify(registeredUsers));
+  }, [registeredUsers]);
+
+  useEffect(() => {
+    if (activeUser) {
+      localStorage.setItem('bookly_active_user', JSON.stringify(activeUser));
+    } else {
+      localStorage.removeItem('bookly_active_user');
+    }
+  }, [activeUser]);
   const [books, setBooks] = useState(initialBooks);
   const [ratings, setRatings] = useState(initialRatings);
   const [toasts, setToasts] = useState([]);
@@ -329,13 +366,60 @@ function App() {
     }, 4000);
   };
 
-  const handleUserChange = (user) => {
-    setActiveUser(user);
-    setShowProfileDropdown(false);
-    addToast(`Switched profile to ${user.username} (${user.role})`, 'info');
-    if (user.role !== 'ADMIN' && activeTab === 'manage') {
-      setActiveTab('explore');
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (!usernameInput.trim() || !passwordInput.trim()) {
+      addToast("Please fill in all fields", "error");
+      return;
     }
+    const foundUser = registeredUsers.find(u => 
+      u.username.toLowerCase() === usernameInput.trim().toLowerCase() ||
+      u.email.toLowerCase() === usernameInput.trim().toLowerCase()
+    );
+    
+    if (foundUser) {
+      setActiveUser(foundUser);
+      addToast(`Welcome back, ${foundUser.username}!`, "success");
+      setUsernameInput('');
+      setPasswordInput('');
+    } else {
+      addToast("User not found. (Use john_doe, sarah_read, admin_mike)", "error");
+    }
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (!usernameInput.trim() || !emailInput.trim() || !passwordInput.trim()) {
+      addToast("Please fill in all fields", "error");
+      return;
+    }
+    const exists = registeredUsers.some(u => 
+      u.username.toLowerCase() === usernameInput.trim().toLowerCase() ||
+      u.email.toLowerCase() === emailInput.trim().toLowerCase()
+    );
+    if (exists) {
+      addToast("Username or Email already taken", "error");
+      return;
+    }
+    const newUser = {
+      id: registeredUsers.length + 1,
+      username: usernameInput.trim(),
+      email: emailInput.trim(),
+      role: "USER",
+      avatar: usernameInput.trim().charAt(0).toUpperCase()
+    };
+    setRegisteredUsers([...registeredUsers, newUser]);
+    setActiveUser(newUser);
+    addToast("Account created successfully!", "success");
+    setUsernameInput('');
+    setEmailInput('');
+    setPasswordInput('');
+  };
+
+  const handleGuestLogin = () => {
+    const guestUser = registeredUsers.find(u => u.role === "GUEST") || users[3];
+    setActiveUser(guestUser);
+    addToast("Logged in as Guest", "info");
   };
 
   // Toggle collapsible filter sections
@@ -739,12 +823,12 @@ function App() {
   };
 
   const getUsernameById = (userId) => {
-    const user = users.find(u => u.id === userId);
+    const user = registeredUsers.find(u => u.id === userId);
     return user ? user.username : "Anonymous";
   };
 
   const getUserRoleColor = (userId) => {
-    const user = users.find(u => u.id === userId);
+    const user = registeredUsers.find(u => u.id === userId);
     if (!user) return 'var(--text-muted)';
     if (user.role === 'ADMIN') return 'var(--accent-secondary)';
     return 'var(--accent-primary)';
@@ -754,6 +838,137 @@ function App() {
   const filteredDialogGenres = ALL_GENRES.filter(genre => 
     genre.toLowerCase().includes(dialogSearch.toLowerCase())
   );
+
+  if (!activeUser) {
+    return (
+      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '1rem' }}>
+        {/* Toast Notifications */}
+        <div className="toast-container">
+          {toasts.map(toast => (
+            <div key={toast.id} className={`toast ${toast.type === 'error' ? 'error' : toast.type === 'info' ? 'info' : 'success'}`}>
+              <span>{toast.message}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="auth-card">
+          <div className="auth-header">
+            <div className="brand-logo" style={{ width: '40px', height: '40px', fontSize: '1.25rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
+              <BookOpen />
+            </div>
+            <span className="brand-name" style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0', display: 'block', textAlign: 'center' }}>Bookly</span>
+            <p className="auth-subtitle" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.25rem' }}>Manage & rate your reading collections</p>
+          </div>
+
+          <div className="auth-tabs">
+            <button 
+              className={`auth-tab ${authMode === 'login' ? 'active' : ''}`}
+              onClick={() => setAuthMode('login')}
+            >
+              Login
+            </button>
+            <button 
+              className={`auth-tab ${authMode === 'register' ? 'active' : ''}`}
+              onClick={() => setAuthMode('register')}
+            >
+              Register
+            </button>
+          </div>
+
+          <div className="auth-body">
+            {authMode === 'login' ? (
+              <form onSubmit={handleLogin} className="auth-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Username or Email</label>
+                  <input 
+                    type="text" 
+                    className="range-number-input"
+                    style={{ height: '38px', padding: '0 0.75rem' }}
+                    placeholder="e.g. sarah_read or john@example.com"
+                    value={usernameInput}
+                    onChange={e => setUsernameInput(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Password</label>
+                  <input 
+                    type="password" 
+                    className="range-number-input"
+                    style={{ height: '38px', padding: '0 0.75rem' }}
+                    placeholder="••••••••"
+                    value={passwordInput}
+                    onChange={e => setPasswordInput(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="btn" style={{ width: '100%', height: '38px', marginTop: '0.5rem' }}>
+                  Sign In
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleRegister} className="auth-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Username</label>
+                  <input 
+                    type="text" 
+                    className="range-number-input"
+                    style={{ height: '38px', padding: '0 0.75rem' }}
+                    placeholder="e.g. bookworm99"
+                    value={usernameInput}
+                    onChange={e => setUsernameInput(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Email Address</label>
+                  <input 
+                    type="email" 
+                    className="range-number-input"
+                    style={{ height: '38px', padding: '0 0.75rem' }}
+                    placeholder="e.g. user@example.com"
+                    value={emailInput}
+                    onChange={e => setEmailInput(e.target.value)}
+                    required
+                  />
+                </div>
+                
+                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Password</label>
+                  <input 
+                    type="password" 
+                    className="range-number-input"
+                    style={{ height: '38px', padding: '0 0.75rem' }}
+                    placeholder="••••••••"
+                    value={passwordInput}
+                    onChange={e => setPasswordInput(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="btn" style={{ width: '100%', height: '38px', marginTop: '0.5rem' }}>
+                  Create Account
+                </button>
+              </form>
+            )}
+
+            <div className="auth-divider" style={{ display: 'flex', alignItems: 'center', margin: '1rem 0', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+              <div style={{ flexGrow: 1, height: '2px', backgroundColor: 'var(--border-color)' }}></div>
+              <span style={{ padding: '0 0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>or</span>
+              <div style={{ flexGrow: 1, height: '2px', backgroundColor: 'var(--border-color)' }}></div>
+            </div>
+
+            <button type="button" className="btn btn-secondary" style={{ width: '100%', height: '38px' }} onClick={handleGuestLogin}>
+              Continue as Guest
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">
@@ -1093,29 +1308,18 @@ function App() {
                   </button>
 
                   <div className="profile-dropdown-divider"></div>
-                  
-                  {/* Persona simulation in dropdown */}
-                  <div style={{ padding: '0.25rem 0.75rem 0.5rem', fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
-                    Quick Switch Role:
-                  </div>
 
-                  {users.map(u => (
-                    <button 
-                      key={u.id}
-                      className={`profile-dropdown-item ${activeUser.id === u.id ? 'active' : ''}`}
-                      onClick={() => handleUserChange(u)}
-                      style={{ paddingLeft: '1.25rem', color: activeUser.id === u.id ? 'var(--accent-primary)' : 'var(--text-secondary)' }}
-                    >
-                      <UserCheck style={{ width: '12px', height: '12px' }} />
-                      {u.username} ({u.role})
-                    </button>
-                  ))}
-
-                  <div className="profile-dropdown-divider"></div>
-
-                  <button className="profile-dropdown-item" onClick={() => handleUserChange(users[3])} style={{ color: 'var(--danger-color)' }}>
+                  <button 
+                    className="profile-dropdown-item" 
+                    onClick={() => { 
+                      setActiveUser(null); 
+                      setShowProfileDropdown(false); 
+                      addToast("Signed out successfully", "info"); 
+                    }} 
+                    style={{ color: 'var(--danger-color)' }}
+                  >
                     <LogOut />
-                    Sign Out (Guest)
+                    Sign Out
                   </button>
                 </div>
               )}

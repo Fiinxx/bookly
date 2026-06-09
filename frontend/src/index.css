@@ -2428,3 +2428,57 @@ body {
   background-color: var(--bg-card) !important;
 }
 
+/* Auth Page Layout */
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--bg-card);
+  border: 3px solid var(--border-color);
+  box-shadow: var(--shadow-lg);
+  border-radius: var(--border-radius-md);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown 0.2s ease-out;
+}
+
+.auth-header {
+  margin-bottom: 1.5rem;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.auth-tab {
+  flex: 1;
+  height: 38px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-input);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.auth-tab.active {
+  background-color: var(--accent-primary);
+  color: #ffffff !important;
+  box-shadow: 2px 2px 0px 0px var(--shadow-color);
+}
+
+.light .auth-tab.active {
+  color: #1e1e1e !important;
+}
+
