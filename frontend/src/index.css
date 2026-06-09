@@ -2,33 +2,33 @@
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-heading: 'Outfit', system-ui, -apple-system, sans-serif;
   
-  /* Color Palette (Neo-Brutalist Rich Editorial Dark Theme) */
-  --bg-app: #121316;
-  --bg-sidebar: #1b1c21;
-  --bg-card: #23252e;
-  --bg-card-hover: #2b2e3a;
-  --bg-input: #292b36;
-  --border-color: #f3f4f6;
+  /* Color Palette (Neo-Brutalist Muted Dark Theme Default) */
+  --bg-app: #0c0d10;
+  --bg-sidebar: #13151b;
+  --bg-card: #1c1f27;
+  --bg-card-hover: #262934;
+  --bg-input: #232631;
+  --border-color: #000000; /* Pitch black borders */
   --border-hover: #ffffff;
   
-  --text-primary: #f3f4f6;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
+  --text-primary: #e2e8f0; /* Soft off-white */
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
   
-  --accent-primary: #ffb84d; /* Rich Warm Gold */
-  --accent-secondary: #ff755f; /* Rich Terracotta */
-  --accent-tertiary: #60a5fa; /* Rich Muted Blue */
-  --accent-quaternary: #b8a9c9; /* Soft Slate Purple */
-  --accent-gradient: #ffb84d;
-  --accent-gradient-hover: #e09e3e;
-  --accent-glow: rgba(255, 184, 77, 0.25);
+  --accent-primary: #5c7267; /* Dark Muted Sage */
+  --accent-secondary: #99594f; /* Dark Muted Terracotta */
+  --accent-tertiary: #a1844b; /* Dark Muted Gold */
+  --accent-quaternary: #746e9d; /* Dark Muted Lavender */
+  --accent-gradient: #5c7267;
+  --accent-gradient-hover: #4d5f56;
+  --accent-glow: rgba(0, 0, 0, 0.4);
   
-  --rating-color: #ffb84d;
-  --success-color: #5bbd86;
-  --danger-color: #ff755f;
-  --info-color: #60a5fa;
+  --rating-color: #a1844b;
+  --success-color: #5c7267;
+  --danger-color: #99594f;
+  --info-color: #4f6e8a;
   
-  --shadow-color: #f3f4f6;
+  --shadow-color: #000000; /* Pitch black shadows in dark mode! */
   --shadow-sm: 2px 2px 0px 0px var(--shadow-color);
   --shadow-md: 4px 4px 0px 0px var(--shadow-color);
   --shadow-lg: 8px 8px 0px 0px var(--shadow-color);
@@ -46,27 +46,27 @@
 
 /* Light Theme Variables */
 :root.light {
-  --bg-app: #f6f5f1; /* editorial sand/parchment background, easy on the eyes */
-  --bg-sidebar: #ffffff;
+  --bg-app: #f4f3ef; /* clay/sand background */
+  --bg-sidebar: #fcfbf9;
   --bg-card: #ffffff;
-  --bg-card-hover: #fbfbf9;
+  --bg-card-hover: #fcfbf9;
   --bg-input: #ffffff;
-  --border-color: #1a1a1a;
+  --border-color: #1e1e1e;
   --border-hover: #000000;
   
-  --text-primary: #1a1a1a;
-  --text-secondary: #404040;
-  --text-muted: #737373;
+  --text-primary: #1e1e1e;
+  --text-secondary: #4a4a4a;
+  --text-muted: #7c7c7c;
   
-  --accent-primary: #f2a22b; /* Rich Warm Gold */
-  --accent-secondary: #d45c43; /* Rich Terracotta Rust */
-  --accent-tertiary: #4a84b0; /* Rich Muted Blue */
-  --accent-quaternary: #9a8bb5; /* Soft Editorial Purple */
-  --accent-gradient: #f2a22b;
-  --accent-gradient-hover: #d38c22;
-  --accent-glow: rgba(26, 26, 26, 0.15);
+  --accent-primary: #93b1a6; /* Muted Sage Green */
+  --accent-secondary: #e0a96d; /* Muted Sandy Gold */
+  --accent-tertiary: #eedd82; /* Muted Mustard */
+  --accent-quaternary: #c3bef0; /* Muted Lavender */
+  --accent-gradient: #93b1a6;
+  --accent-gradient-hover: #7fa396;
+  --accent-glow: rgba(30, 30, 30, 0.15);
   
-  --shadow-color: #1a1a1a;
+  --shadow-color: #1e1e1e;
   --shadow-sm: 2px 2px 0px 0px var(--shadow-color);
   --shadow-md: 4px 4px 0px 0px var(--shadow-color);
   --shadow-lg: 8px 8px 0px 0px var(--shadow-color);
@@ -2238,7 +2238,7 @@ body {
 .book-badge-genre {
   background-color: var(--accent-quaternary);
   border: 2px solid var(--border-color);
-  color: #1e1e1e !important; /* High contrast text */
+  color: #ffffff !important; /* white text in dark mode */
   font-weight: 700;
   box-shadow: 2px 2px 0px 0px var(--shadow-color);
   border-radius: 4px;
@@ -2261,14 +2261,14 @@ body {
 
 .btn {
   background: var(--accent-primary);
-  color: #1e1e1e !important; /* Muted high contrast text color */
+  color: #ffffff !important; /* white text in dark mode */
   border: 2px solid var(--border-color);
   box-shadow: var(--shadow-sm);
   border-radius: var(--border-radius-sm);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.dark .btn {
+.light .btn {
   color: #1e1e1e !important;
 }
 
@@ -2309,25 +2309,25 @@ body {
 
 .rating-value-badge {
   background-color: var(--accent-quaternary);
-  color: #1e1e1e;
+  color: #ffffff; /* white text in dark mode */
   border: 2px solid var(--border-color);
   box-shadow: 2px 2px 0px 0px var(--shadow-color);
 }
 
-.dark .rating-value-badge {
+.light .rating-value-badge {
   color: #1e1e1e;
 }
 
 .filter-chip {
   background-color: var(--accent-tertiary);
   border: 2px solid var(--border-color);
-  color: #1e1e1e !important;
+  color: #ffffff !important; /* white text in dark mode */
   font-weight: 700;
   box-shadow: 2px 2px 0px 0px var(--shadow-color);
   border-radius: 4px;
 }
 
-.dark .filter-chip {
+.light .filter-chip {
   color: #1e1e1e !important;
 }
 
@@ -2361,8 +2361,12 @@ body {
   border: 2px solid var(--border-color) !important;
   box-shadow: var(--shadow-md) !important;
   border-radius: var(--border-radius-sm) !important;
-  color: #1e1e1e !important;
+  color: #ffffff !important; /* white text in dark mode */
   font-weight: 700 !important;
+}
+
+.light .toast {
+  color: #1e1e1e !important;
 }
 
 .toast.success {
@@ -2399,15 +2403,23 @@ body {
 .book-detail-badge-genre {
   background-color: var(--accent-secondary) !important;
   border: 2px solid var(--border-color) !important;
-  color: #1e1e1e !important;
+  color: #ffffff !important; /* white text in dark mode */
   box-shadow: 2px 2px 0px 0px var(--shadow-color) !important;
+}
+
+.light .book-detail-badge-genre {
+  color: #1e1e1e !important;
 }
 
 .book-detail-price-tag {
   background-color: var(--accent-tertiary) !important;
   border: 2px solid var(--border-color) !important;
-  color: #1e1e1e !important;
+  color: #ffffff !important; /* white text in dark mode */
   box-shadow: 2px 2px 0px 0px var(--shadow-color) !important;
+}
+
+.light .book-detail-price-tag {
+  color: #1e1e1e !important;
 }
 
 .back-to-explore-btn {
