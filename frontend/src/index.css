@@ -22,6 +22,7 @@
   --accent-gradient: #5c7267;
   --accent-gradient-hover: #4d5f56;
   --accent-glow: rgba(0, 0, 0, 0.4);
+  --bg-nav-hover: rgba(92, 114, 103, 0.15);
   
   --rating-color: #a1844b;
   --success-color: #5c7267;
@@ -65,6 +66,7 @@
   --accent-gradient: #93b1a6;
   --accent-gradient-hover: #7fa396;
   --accent-glow: rgba(30, 30, 30, 0.15);
+  --bg-nav-hover: rgba(147, 177, 166, 0.20);
   
   --shadow-color: #1e1e1e;
   --shadow-sm: 2px 2px 0px 0px var(--shadow-color);
@@ -177,7 +179,7 @@ body {
 }
 
 .nav-item:hover {
-  background-color: var(--border-color);
+  background-color: var(--bg-nav-hover);
   color: var(--text-primary);
 }
 
