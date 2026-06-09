@@ -1034,6 +1034,21 @@ body {
   color: var(--danger-color);
 }
 
+.review-edit-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.review-edit-btn:hover {
+  color: var(--accent-primary);
+}
+
 /* Submit Review Form */
 .add-review-form {
   display: flex;

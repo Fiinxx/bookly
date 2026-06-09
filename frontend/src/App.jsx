@@ -28,8 +28,210 @@ import {
   LogOut,
   UserCheck,
   Languages,
-  ArrowLeft
+  ArrowLeft,
+  Lock
 } from 'lucide-react';
+
+const translations = {
+  de: {
+    exploreBooks: "Bücher durchsuchen",
+    myReviews: "Meine Bewertungen",
+    settingsBooks: "Katalog-Verwaltung",
+    themeAdjust: "Design anpassen",
+    signIn: "Anmelden",
+    signOut: "Abmelden",
+    searchPlaceholder: "Durchsuche Titel, Au{appLanguage === 'de' ? 'bis' : 'to'}ren oder ISBN-Referenzen...",
+    activeFilters: "Aktive Filter:",
+    clearAll: "Alle löschen",
+    filterHeader: "Katalog-Filter",
+    searchBooks: "Titel / Autor filtern",
+    genres: "Genres",
+    authors: "Autoren",
+    languages: "Sprachen",
+    priceRange: "Preisspanne",
+    minRating: "Mindestbewertung",
+    showMore: "Mehr anzeigen",
+    showLess: "Weniger anzeigen",
+    backToCatalog: "Zurück zum Katalog",
+    synopsis: "Beschreibung / Zusammenfassung",
+    userReviews: "Nutzer-Bewertungen",
+    writeReview: "Eine Bewertung schreiben",
+    editReview: "Deine Bewertung bearbeiten",
+    yourRating: "Deine Bewertung:",
+    reviewPlaceholder: "Teile deine Gedanken über dieses Buch...",
+    submitReview: "Bewertung abschicken",
+    updateReview: "Bewertung aktualisieren",
+    guestWarning: "Gast-Profil. Rolle wechseln, um zu bewerten.",
+    noReviewsYet: "Noch keine Bewertungen verfasst. Schreibe die erste!",
+    needLoginToReviewTitle: "Möchtest du eine Bewertung abgeben?",
+    needLoginToReviewDesc: "Bitte melde dich an oder registriere dich, um Rezensionen zu schreiben und Bücher zu bewerten.",
+    loginOrRegister: "Anmelden / Registrieren",
+    myReviewsHeader: "Meine Bewertungen",
+    myReviewsSub: "{translations[appLanguage].myReviewsSub}",
+    statWritten: "Geschriebene Bewertungen",
+    statAvgRating: "Durchschnittliche Bewertung",
+    statFavoriteGenre: "Lieblingsgenre",
+    noReviewsWritten: "Keine Bewertungen verfasst",
+    noReviewsWrittenDesc: "Du hast für dieses Profil noch keine Bewertungen geschrieben.",
+    needLoginReviewsTitle: "Anmeldung erforderlich",
+    needLoginReviewsDesc: "Um deine persönlichen Bewertungen, gelesenen Bücher und Lesestatistiken zu sehen, melde dich bitte an oder erstelle ein neues Konto.",
+    loginRegisterBtn: "Jetzt anmelden / registrieren",
+    catalogControl: "Katalog-Datenbankverwaltung",
+    catalogControlSub: "Inbound REST-Controller mappen Use Cases direkt auf JPA-Adapter. Schreibvorgänge sind rollengeschützt.",
+    addNewBook: "Buch hinzufügen",
+    adminRequired: "(Admin-Rechte erforderlich, um Katalogeinträge hinzuzufügen oder zu bearbeiten)",
+    tableTitle: "Titel",
+    tableAuthor: "Autor",
+    tableGenre: "Genre",
+    tableLanguage: "Sprache",
+    tablePages: "Seiten",
+    tablePrice: "Preis",
+    tableActions: "Aktionen",
+    noRecords: "Keine Einträge in der Katalog-Datenbank. Erstelle ein Buch, um zu beginnen.",
+    modifyBook: "Katalogeintrag bearbeiten",
+    addBookToRepo: "Buch zum Katalog hinzufügen",
+    bookTitle: "Buchtitel",
+    bookAuthor: "Buchautor",
+    bookPrice: "Buchpreis",
+    bookPages: "Seitenanzahl",
+    bookLanguage: "Sprache",
+    bookDescription: "Beschreibung",
+    cancel: "Abbrechen",
+    saveChanges: "Änderungen speichern",
+    selectGenres: "Genres auswählen",
+    filterGenres: "Genres filtern...",
+    selectAuthors: "Autoren auswählen",
+    filterAuthors: "Autoren filtern...",
+    applyFilters: "Filter anwenden",
+    clearSelection: "Auswahl aufheben",
+    login: "Einloggen",
+    register: "Registrieren",
+    usernameOrEmail: "Benutzername oder E-Mail",
+    username: "Benutzername",
+    email: "E-Mail-Adresse",
+    password: "Passwort",
+    continueGuest: "Als Gast fortfahren",
+    orDivider: "oder",
+    welcomeBack: "Willkommen zurück",
+    userNotFound: "Benutzer nicht gefunden. (Nutze john_doe, sarah_read, admin_mike)",
+    unauthorizedDelete: "Nicht berechtigt, diese Bewertung zu löschen",
+    reviewDeleted: "Bewertung gelöscht",
+    bookDeleted: "Buch erfolgreich gelöscht!",
+    confirmDeleteBook: "Bist du sicher, dass du dieses Buch löschen möchtest?",
+    fieldsRequired: "Titel, Autor und ISBN sind erforderlich",
+    bookAddedSuccess: "Buch erfolgreich hinzugefügt!",
+    bookUpdatedSuccess: "Buch erfolgreich aktualisiert!",
+    importSuccess: "Buch erfolgreich importiert!",
+    importDuplicate: "Dieses Buch befindet sich bereits in deinem Katalog!",
+    guestNotice: "Als Gast fortgefahren",
+    logoutSuccess: "Erfolgreich abgemeldet",
+    acctCreated: "Konto erfolgreich erstellt!",
+    fieldsAllRequired: "Bitte fülle alle Felder aus",
+    usernameTaken: "Benutzername oder E-Mail bereits vergeben",
+    unauthorizedAdmin: "Admin-Rechte erforderlich",
+    reviewAdded: "Bewertung erfolgreich hinzugefügt!",
+    reviewUpdated: "Bewertung erfolgreich aktualisiert!"
+  },
+  en: {
+    exploreBooks: "Explore Books",
+    myReviews: "My Reviews",
+    settingsBooks: "Settings Books",
+    themeAdjust: "Adjust appearance",
+    signIn: "Sign In",
+    signOut: "{translations[appLanguage].signOut}",
+    searchPlaceholder: "Search catalog titles, author, or ISBN references...",
+    activeFilters: "Active Filters:",
+    clearAll: "Clear all",
+    filterHeader: "Catalog Filters",
+    searchBooks: "Filter Title / Author",
+    genres: "Genres",
+    authors: "Authors",
+    languages: "Languages",
+    priceRange: "Price Range",
+    minRating: "Minimum Rating",
+    showMore: "Show more",
+    showLess: "Show less",
+    backToCatalog: "Back to Catalog",
+    synopsis: "Synopsis Description",
+    userReviews: "User Reviews",
+    writeReview: "Write a Review",
+    editReview: "Edit your Review",
+    yourRating: "Your Rating:",
+    reviewPlaceholder: "Share your thoughts on this book...",
+    submitReview: "Submit Review",
+    updateReview: "Update Review",
+    guestWarning: "Guest profile. Switch user role to review this book.",
+    noReviewsYet: "{translations[appLanguage].noReviewsYet}",
+    needLoginToReviewTitle: "Do you want to submit a review?",
+    needLoginToReviewDesc: "Please log in or register to write reviews and rate books.",
+    loginOrRegister: "Login / Register",
+    myReviewsHeader: "My Reviews",
+    myReviewsSub: "Here you can see your written reviews and personal statistics.",
+    statWritten: "Reviews Written",
+    statAvgRating: "Average Rating",
+    statFavoriteGenre: "Favorite Genre",
+    noReviewsWritten: "No reviews written",
+    noReviewsWrittenDesc: "You haven't written any reviews for this profile yet.",
+    needLoginReviewsTitle: "Authentication Required",
+    needLoginReviewsDesc: "To see your personal reviews, read books, and reading stats, please sign in or create a new account.",
+    loginRegisterBtn: "Sign in / Register now",
+    catalogControl: "{translations[appLanguage].catalogControl}",
+    catalogControlSub: "{translations[appLanguage].catalogControlSub}",
+    addNewBook: "{translations[appLanguage].addNewBook}",
+    adminRequired: "(Admin credentials required to add or edit catalog records)",
+    tableTitle: "Title",
+    tableAuthor: "Author",
+    tableGenre: "Genre",
+    tableLanguage: "Language",
+    tablePages: "Pages",
+    tablePrice: "Price",
+    tableActions: "Actions",
+    noRecords: "{translations[appLanguage].noRecords}",
+    modifyBook: "Modify Book Record",
+    addBookToRepo: "Add Book to Repository",
+    bookTitle: "Book Title",
+    bookAuthor: "Book Author",
+    bookPrice: "Book Price",
+    bookPages: "Page Count",
+    bookLanguage: "Language",
+    bookDescription: "Description",
+    cancel: "{translations[appLanguage].cancel}",
+    saveChanges: "{translations[appLanguage].saveChanges}",
+    selectGenres: "{translations[appLanguage].selectGenres}",
+    filterGenres: "Filter genres...",
+    selectAuthors: "{translations[appLanguage].selectAuthors}",
+    filterAuthors: "Filter authors...",
+    applyFilters: "{translations[appLanguage].applyFilters}",
+    clearSelection: "{translations[appLanguage].clearSelection}",
+    login: "Login",
+    register: "Register",
+    usernameOrEmail: "Username or Email",
+    username: "Username",
+    email: "Email Address",
+    password: "Password",
+    continueGuest: "Continue as Guest",
+    orDivider: "or",
+    welcomeBack: "Welcome back",
+    userNotFound: "User not found. (Use john_doe, sarah_read, admin_mike)",
+    unauthorizedDelete: "Unauthorized to delete this review",
+    reviewDeleted: "Review deleted",
+    bookDeleted: "Book deleted successfully!",
+    confirmDeleteBook: "Are you sure you want to delete this book?",
+    fieldsRequired: "Title, Author, and ISBN are required",
+    bookAddedSuccess: "Book added successfully!",
+    bookUpdatedSuccess: "Book updated successfully!",
+    importSuccess: "Imported book successfully!",
+    importDuplicate: "This book is already in your Bookly catalog!",
+    guestNotice: "Browsing as Guest",
+    logoutSuccess: "Signed out successfully",
+    acctCreated: "Account created successfully!",
+    fieldsAllRequired: "Please fill in all fields",
+    usernameTaken: "Username or Email already taken",
+    unauthorizedAdmin: "Admin credentials required",
+    reviewAdded: "Review added successfully!",
+    reviewUpdated: "Review updated successfully!"
+  }
+};
 
 // Expandable Mock Genres List
 const ALL_GENRES = [
@@ -262,6 +464,14 @@ function App() {
     return null;
   });
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [appLanguage, setAppLanguage] = useState(() => {
+    return localStorage.getItem('bookly_app_lang') || 'de';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('bookly_app_lang', appLanguage);
+  }, [appLanguage]);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
   const [usernameInput, setUsernameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
@@ -330,6 +540,19 @@ function App() {
   
   // Rating Submission State
   const [newRating, setNewRating] = useState({ rating: 5, comment: "" });
+
+  useEffect(() => {
+    if (selectedBook && activeUser) {
+      const existing = ratings.find(r => r.bookId === selectedBook.id && r.userId === activeUser.id);
+      if (existing) {
+        setNewRating({ rating: existing.rating, comment: existing.comment });
+      } else {
+        setNewRating({ rating: 5, comment: "" });
+      }
+    } else {
+      setNewRating({ rating: 5, comment: "" });
+    }
+  }, [selectedBook, activeUser, ratings]);
   
   // OpenLibrary API State
   const [enriching, setEnriching] = useState(false);
@@ -369,7 +592,7 @@ function App() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (!usernameInput.trim() || !passwordInput.trim()) {
-      addToast("Please fill in all fields", "error");
+      addToast(translations[appLanguage].fieldsAllRequired, "error");
       return;
     }
     const foundUser = registeredUsers.find(u => 
@@ -379,18 +602,19 @@ function App() {
     
     if (foundUser) {
       setActiveUser(foundUser);
-      addToast(`Welcome back, ${foundUser.username}!`, "success");
+      addToast(`${translations[appLanguage].welcomeBack}, ${foundUser.username}!`, "success");
       setUsernameInput('');
       setPasswordInput('');
+      setShowAuthModal(false);
     } else {
-      addToast("User not found. (Use john_doe, sarah_read, admin_mike)", "error");
+      addToast(translations[appLanguage].userNotFound, "error");
     }
   };
 
   const handleRegister = (e) => {
     e.preventDefault();
     if (!usernameInput.trim() || !emailInput.trim() || !passwordInput.trim()) {
-      addToast("Please fill in all fields", "error");
+      addToast(translations[appLanguage].fieldsAllRequired, "error");
       return;
     }
     const exists = registeredUsers.some(u => 
@@ -398,7 +622,7 @@ function App() {
       u.email.toLowerCase() === emailInput.trim().toLowerCase()
     );
     if (exists) {
-      addToast("Username or Email already taken", "error");
+      addToast(translations[appLanguage].usernameTaken, "error");
       return;
     }
     const newUser = {
@@ -410,16 +634,16 @@ function App() {
     };
     setRegisteredUsers([...registeredUsers, newUser]);
     setActiveUser(newUser);
-    addToast("Account created successfully!", "success");
+    addToast(translations[appLanguage].acctCreated, "success");
     setUsernameInput('');
     setEmailInput('');
     setPasswordInput('');
+    setShowAuthModal(false);
   };
 
   const handleGuestLogin = () => {
-    const guestUser = registeredUsers.find(u => u.role === "GUEST") || users[3];
-    setActiveUser(guestUser);
-    addToast("Logged in as Guest", "info");
+    setShowAuthModal(false);
+    addToast(translations[appLanguage].guestNotice, "info");
   };
 
   // Toggle collapsible filter sections
@@ -585,26 +809,48 @@ function App() {
   // Review Form Submit Handler
   const handleAddRating = (e) => {
     e.preventDefault();
+    if (!activeUser) {
+      addToast(translations[appLanguage].signIn, "error");
+      return;
+    }
     if (activeUser.role === 'GUEST') {
-      addToast("Guests cannot submit reviews", "error");
+      addToast(translations[appLanguage].guestWarning, "error");
       return;
     }
     if (!newRating.comment.trim()) {
-      addToast("Please write a comment", "error");
+      addToast(appLanguage === 'de' ? "Bitte schreibe einen Kommentar" : "Please write a comment", "error");
       return;
     }
 
-    const ratingId = Date.now();
-    const ratingObj = {
-      id: ratingId,
-      rating: newRating.rating,
-      comment: newRating.comment,
-      creationTime: new Date().toISOString(),
-      userId: activeUser.id,
-      bookId: selectedBook.id
-    };
+    const existing = ratings.find(r => r.bookId === selectedBook.id && r.userId === activeUser.id);
+    let updatedRatings;
+    if (existing) {
+      updatedRatings = ratings.map(r => {
+        if (r.id === existing.id) {
+          return {
+            ...r,
+            rating: newRating.rating,
+            comment: newRating.comment,
+            creationTime: new Date().toISOString()
+          };
+        }
+        return r;
+      });
+      addToast(translations[appLanguage].reviewUpdated, "success");
+    } else {
+      const ratingId = Date.now();
+      const ratingObj = {
+        id: ratingId,
+        rating: newRating.rating,
+        comment: newRating.comment,
+        creationTime: new Date().toISOString(),
+        userId: activeUser.id,
+        bookId: selectedBook.id
+      };
+      updatedRatings = [ratingObj, ...ratings];
+      addToast(translations[appLanguage].reviewAdded, "success");
+    }
 
-    const updatedRatings = [ratingObj, ...ratings];
     setRatings(updatedRatings);
 
     // Update book ratings metadata
@@ -620,8 +866,6 @@ function App() {
 
     setBooks(updatedBooks);
     setSelectedBook(prev => ({ ...prev, averageRating: avg, ratingCount: bookRatings.length }));
-    setNewRating({ rating: 5, comment: "" });
-    addToast("Review added successfully!");
   };
 
   // Review Deletion Handler
@@ -629,8 +873,8 @@ function App() {
     const ratingToDelete = ratings.find(r => r.id === ratingId);
     if (!ratingToDelete) return;
 
-    if (activeUser.role !== 'ADMIN' && ratingToDelete.userId !== activeUser.id) {
-      addToast("Unauthorized to delete this review", "error");
+    if (!activeUser || (activeUser.role !== 'ADMIN' && ratingToDelete.userId !== activeUser.id)) {
+      addToast(translations[appLanguage].unauthorizedDelete, "error");
       return;
     }
 
@@ -652,37 +896,37 @@ function App() {
 
     setBooks(updatedBooks);
     setSelectedBook(prev => ({ ...prev, averageRating: avg, ratingCount: bookRatings.length }));
-    addToast("Review deleted");
+    addToast(translations[appLanguage].reviewDeleted, "info");
   };
 
   // Book Pruning (Admin Only)
   const handleDeleteBook = (bookId, e) => {
     if (e) e.stopPropagation();
-    if (activeUser.role !== 'ADMIN') {
-      addToast("Admin credentials required", "error");
+    if (activeUser?.role !== 'ADMIN') {
+      addToast(translations[appLanguage].unauthorizedAdmin, "error");
       return;
     }
 
-    if (confirm("Are you sure you want to delete this book?")) {
+    if (confirm(translations[appLanguage].confirmDeleteBook)) {
       setBooks(prev => prev.filter(b => b.id !== bookId));
       setRatings(prev => prev.filter(r => r.bookId !== bookId));
       if (selectedBook && selectedBook.id === bookId) {
         setSelectedBook(null);
       }
-      addToast("Book deleted successfully!");
+      addToast(translations[appLanguage].bookDeleted, "success");
     }
   };
 
   // Save changes to books (Admin Only)
   const handleSaveBook = (e) => {
     e.preventDefault();
-    if (activeUser.role !== 'ADMIN') {
-      addToast("Admin credentials required", "error");
+    if (activeUser?.role !== 'ADMIN') {
+      addToast(translations[appLanguage].unauthorizedAdmin, "error");
       return;
     }
 
     if (!newBookForm.title.trim() || !newBookForm.author.trim() || !newBookForm.isbn.trim()) {
-      addToast("Title, Author, and ISBN are required", "error");
+      addToast(translations[appLanguage].fieldsRequired, "error");
       return;
     }
 
@@ -708,7 +952,7 @@ function App() {
           pagecount: parseInt(newBookForm.pagecount) || 0
         });
       }
-      addToast("Book updated successfully!");
+      addToast(translations[appLanguage].bookUpdatedSuccess, "success");
     } else {
       // Create mode
       const newBookObj = {
@@ -720,7 +964,7 @@ function App() {
         ratingCount: 0
       };
       setBooks([newBookObj, ...books]);
-      addToast(`Book "${newBookObj.title}" created successfully!`);
+      addToast(translations[appLanguage].bookAddedSuccess, "success");
     }
 
     setShowModal(false);
@@ -807,7 +1051,7 @@ function App() {
 
   const handleImportBook = (olBook) => {
     if (books.some(b => b.isbn === olBook.isbn && olBook.isbn)) {
-      addToast("This book is already in your Bookly catalog!", "info");
+      addToast(translations[appLanguage].importDuplicate, "info");
       return;
     }
 
@@ -819,7 +1063,7 @@ function App() {
     };
 
     setBooks([newBook, ...books]);
-    addToast(`Imported "${olBook.title}" into Bookly!`);
+    addToast(`${translations[appLanguage].importSuccess} "${olBook.title}"`, "success");
   };
 
   const getUsernameById = (userId) => {
@@ -839,136 +1083,7 @@ function App() {
     genre.toLowerCase().includes(dialogSearch.toLowerCase())
   );
 
-  if (!activeUser) {
-    return (
-      <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', padding: '1rem' }}>
-        {/* Toast Notifications */}
-        <div className="toast-container">
-          {toasts.map(toast => (
-            <div key={toast.id} className={`toast ${toast.type === 'error' ? 'error' : toast.type === 'info' ? 'info' : 'success'}`}>
-              <span>{toast.message}</span>
-            </div>
-          ))}
-        </div>
 
-        <div className="auth-card">
-          <div className="auth-header">
-            <div className="brand-logo" style={{ width: '40px', height: '40px', fontSize: '1.25rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 0.5rem' }}>
-              <BookOpen />
-            </div>
-            <span className="brand-name" style={{ fontSize: '1.75rem', fontWeight: 800, margin: '0', display: 'block', textAlign: 'center' }}>Bookly</span>
-            <p className="auth-subtitle" style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textAlign: 'center', marginTop: '0.25rem' }}>Manage & rate your reading collections</p>
-          </div>
-
-          <div className="auth-tabs">
-            <button 
-              className={`auth-tab ${authMode === 'login' ? 'active' : ''}`}
-              onClick={() => setAuthMode('login')}
-            >
-              Login
-            </button>
-            <button 
-              className={`auth-tab ${authMode === 'register' ? 'active' : ''}`}
-              onClick={() => setAuthMode('register')}
-            >
-              Register
-            </button>
-          </div>
-
-          <div className="auth-body">
-            {authMode === 'login' ? (
-              <form onSubmit={handleLogin} className="auth-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Username or Email</label>
-                  <input 
-                    type="text" 
-                    className="range-number-input"
-                    style={{ height: '38px', padding: '0 0.75rem' }}
-                    placeholder="e.g. sarah_read or john@example.com"
-                    value={usernameInput}
-                    onChange={e => setUsernameInput(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Password</label>
-                  <input 
-                    type="password" 
-                    className="range-number-input"
-                    style={{ height: '38px', padding: '0 0.75rem' }}
-                    placeholder="••••••••"
-                    value={passwordInput}
-                    onChange={e => setPasswordInput(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <button type="submit" className="btn" style={{ width: '100%', height: '38px', marginTop: '0.5rem' }}>
-                  Sign In
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleRegister} className="auth-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Username</label>
-                  <input 
-                    type="text" 
-                    className="range-number-input"
-                    style={{ height: '38px', padding: '0 0.75rem' }}
-                    placeholder="e.g. bookworm99"
-                    value={usernameInput}
-                    onChange={e => setUsernameInput(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Email Address</label>
-                  <input 
-                    type="email" 
-                    className="range-number-input"
-                    style={{ height: '38px', padding: '0 0.75rem' }}
-                    placeholder="e.g. user@example.com"
-                    value={emailInput}
-                    onChange={e => setEmailInput(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                  <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>Password</label>
-                  <input 
-                    type="password" 
-                    className="range-number-input"
-                    style={{ height: '38px', padding: '0 0.75rem' }}
-                    placeholder="••••••••"
-                    value={passwordInput}
-                    onChange={e => setPasswordInput(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <button type="submit" className="btn" style={{ width: '100%', height: '38px', marginTop: '0.5rem' }}>
-                  Create Account
-                </button>
-              </form>
-            )}
-
-            <div className="auth-divider" style={{ display: 'flex', alignItems: 'center', margin: '1rem 0', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-              <div style={{ flexGrow: 1, height: '2px', backgroundColor: 'var(--border-color)' }}></div>
-              <span style={{ padding: '0 0.75rem', fontWeight: 700, textTransform: 'uppercase' }}>or</span>
-              <div style={{ flexGrow: 1, height: '2px', backgroundColor: 'var(--border-color)' }}></div>
-            </div>
-
-            <button type="button" className="btn btn-secondary" style={{ width: '100%', height: '38px' }} onClick={handleGuestLogin}>
-              Continue as Guest
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="app-container">
@@ -1005,7 +1120,7 @@ function App() {
                 className={`nav-item ${activeTab === 'explore' ? 'active' : ''}`}
               >
                 <Layers />
-                <span>Explore Books</span>
+                <span>{translations[appLanguage].exploreBooks}</span>
               </button>
             </li>
             <li>
@@ -1014,17 +1129,17 @@ function App() {
                 className={`nav-item ${activeTab === 'reviews' ? 'active' : ''}`}
               >
                 <Star />
-                <span>Meine Bewertungen</span>
+                <span>{translations[appLanguage].myReviews}</span>
               </button>
             </li>
-            {activeUser.role === 'ADMIN' && (
+            {activeUser?.role === 'ADMIN' && (
               <li>
                 <button 
                   onClick={() => { setActiveTab('manage'); setSelectedBook(null); }}
                   className={`nav-item ${activeTab === 'manage' ? 'active' : ''}`}
                 >
                   <Settings />
-                  <span>Settings Books</span>
+                  <span>{translations[appLanguage].settingsBooks}</span>
                 </button>
               </li>
             )}
@@ -1035,10 +1150,10 @@ function App() {
         {activeTab === 'explore' && (
           <div className="sidebar-filters-section">
             <div className="filters-title-row">
-              <span className="filters-title">Catalog Filters</span>
+              <span className="filters-title">{translations[appLanguage].filterHeader}</span>
               {(selectedGenres.length > 0 || selectedAuthors.length > 0 || minPriceFilter > 0 || maxPriceFilter < 100 || selectedLanguages.length > 0 || minRatingFilter > 0 || searchQuery !== '') && (
                 <button className="clear-filters-btn" onClick={handleClearFilters}>
-                  Clear All
+                  {translations[appLanguage].clearAll}
                 </button>
               )}
             </div>
@@ -1046,7 +1161,7 @@ function App() {
             {/* Collapsible Category: Genre */}
             <div className="accordion-item">
               <div className="accordion-header" onClick={() => toggleCollapsible('genre')}>
-                <span>Genres ({selectedGenres.length})</span>
+                <span>{translations[appLanguage].genres} ({selectedGenres.length})</span>
                 {collapsibles.genre ? <ChevronUp className="accordion-icon" /> : <ChevronDown className="accordion-icon" />}
               </div>
               
@@ -1064,7 +1179,7 @@ function App() {
                   ))}
                   <button className="more-filters-btn" onClick={openGenreDialog}>
                     <SlidersHorizontal size={12} />
-                    More Genres...
+                    {translations[appLanguage].showMore}
                   </button>
                 </div>
               )}
@@ -1073,7 +1188,7 @@ function App() {
             {/* Collapsible Category: Authors */}
             <div className="accordion-item">
               <div className="accordion-header" onClick={() => toggleCollapsible('author')}>
-                <span>Authors ({selectedAuthors.length})</span>
+                <span>{translations[appLanguage].authors} ({selectedAuthors.length})</span>
                 {collapsibles.author ? <ChevronUp className="accordion-icon" /> : <ChevronDown className="accordion-icon" />}
               </div>
 
@@ -1091,7 +1206,7 @@ function App() {
                   ))}
                   <button className="more-filters-btn" onClick={openAuthorDialog}>
                     <SlidersHorizontal size={12} />
-                    More Authors...
+                    {translations[appLanguage].showMore}
                   </button>
                 </div>
               )}
@@ -1100,7 +1215,7 @@ function App() {
             {/* Collapsible Category: Price Range */}
             <div className="accordion-item">
               <div className="accordion-header" onClick={() => toggleCollapsible('price')}>
-                <span>Price Range</span>
+                <span>{translations[appLanguage].priceRange}</span>
                 {collapsibles.price ? <ChevronUp className="accordion-icon" /> : <ChevronDown className="accordion-icon" />}
               </div>
 
@@ -1181,7 +1296,7 @@ function App() {
             {/* Collapsible Category: Languages */}
             <div className="accordion-item">
               <div className="accordion-header" onClick={() => toggleCollapsible('language')}>
-                <span>Languages</span>
+                <span>{translations[appLanguage].languages}</span>
                 {collapsibles.language ? <ChevronUp className="accordion-icon" /> : <ChevronDown className="accordion-icon" />}
               </div>
 
@@ -1204,7 +1319,7 @@ function App() {
             {/* Collapsible Category: Rating */}
             <div className="accordion-item">
               <div className="accordion-header" onClick={() => toggleCollapsible('rating')}>
-                <span>Minimum Rating</span>
+                <span>{translations[appLanguage].minRating}</span>
                 {collapsibles.rating ? <ChevronUp className="accordion-icon" /> : <ChevronDown className="accordion-icon" />}
               </div>
 
@@ -1213,9 +1328,9 @@ function App() {
                   <div className="rating-slider-group">
                     <div className="rating-display-row">
                       <span className="rating-value-badge">
-                        {minRatingFilter === 0 ? "All Ratings" : `${minRatingFilter.toFixed(1)} ⭐`}
+                        {minRatingFilter === 0 ? (appLanguage === 'de' ? "Alle Bewertungen" : "All Ratings") : `${minRatingFilter.toFixed(1)} ⭐`}
                       </span>
-                      {minRatingFilter > 0 && <span className="rating-or-higher">or higher</span>}
+                      {minRatingFilter > 0 && <span className="rating-or-higher">{appLanguage === 'de' ? "oder höher" : "or higher"}</span>}
                     </div>
                     <input 
                       type="range" 
@@ -1249,7 +1364,7 @@ function App() {
         {/* BIG HEADER BAR */}
         <header className="header-bar">
           <div className="header-brand-title">
-            {selectedBook ? "Book Details" : activeTab === 'explore' ? "Bookly" : activeTab === 'manage' ? "Repository Settings" : "Meine Bewertungen"}
+            {selectedBook ? (appLanguage === 'de' ? "Buchdetails" : "Book Details") : activeTab === 'explore' ? "Bookly" : activeTab === 'manage' ? (appLanguage === 'de' ? "Katalog-Verwaltung" : "Repository Settings") : translations[appLanguage].myReviews}
           </div>
 
           {/* BIG CENTRAL SEARCH BAR */}
@@ -1259,7 +1374,7 @@ function App() {
               <input 
                 type="text" 
                 className="header-search-bar"
-                placeholder="Search catalog titles, author, or ISBN references..."
+                placeholder={translations[appLanguage].searchPlaceholder}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
               />
@@ -1267,7 +1382,7 @@ function App() {
                 <button 
                   className="mobile-filter-toggle-btn"
                   onClick={() => setIsFilterDrawerOpen(true)}
-                  title="Open Filters"
+                  title={appLanguage === 'de' ? "Filter öffnen" : "Open Filters"}
                 >
                   <SlidersHorizontal size={16} />
                 </button>
@@ -1278,8 +1393,17 @@ function App() {
           )}
 
           {/* RIGHT SIDE PROFILE TRIGGER & COMMON DROPDOWN */}
-          <div className="header-actions-group">
-            <div className="header-profile-container" ref={dropdownRef}>
+          <div className="header-actions-group" style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <button 
+              className="theme-toggle-btn"
+              onClick={() => setAppLanguage(appLanguage === 'de' ? 'en' : 'de')}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--border-color)', padding: '0.4rem', borderRadius: '4px', cursor: 'pointer', background: 'var(--bg-input)', color: 'var(--text-primary)' }}
+              title={appLanguage === 'de' ? "Switch to English" : "Auf Deutsch umstellen"}
+            >
+              <Languages size={18} />
+            </button>
+            {activeUser ? (
+              <div className="header-profile-container" ref={dropdownRef}>
               <div 
                 className={`profile-trigger ${showProfileDropdown ? 'active' : ''}`}
                 onClick={() => setShowProfileDropdown(!showProfileDropdown)}
@@ -1294,17 +1418,17 @@ function App() {
                 <div className="profile-dropdown-menu">
                   <div className="profile-dropdown-header">
                     <div className="profile-dropdown-username">{activeUser.username}</div>
-                    <div className="profile-dropdown-role">{activeUser.role} Account</div>
+                    <div className="profile-dropdown-role">{activeUser.role} {appLanguage === 'de' ? 'Konto' : 'Account'}</div>
                   </div>
 
-                  <button className="profile-dropdown-item" onClick={() => addToast("Redirecting to profile info settings...", "info")}>
+                  <button className="profile-dropdown-item" onClick={() => addToast(appLanguage === 'de' ? "Weiterleitung zu den Profileinstellungen..." : "Redirecting to profile info settings...", "info")}>
                     <User />
-                    Account Security
+                    {appLanguage === 'de' ? 'Kontosicherheit' : 'Account Security'}
                   </button>
 
                   <button className="profile-dropdown-item" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
                     {theme === 'dark' ? <Sun /> : <Moon />}
-                    Appearance: {theme === 'dark' ? 'Dark' : 'Light'}
+                    Appearance: {theme === 'dark' ? (appLanguage === 'de' ? 'Dunkel' : 'Dark') : (appLanguage === 'de' ? 'Hell' : 'Light')}
                   </button>
 
                   <div className="profile-dropdown-divider"></div>
@@ -1314,16 +1438,38 @@ function App() {
                     onClick={() => { 
                       setActiveUser(null); 
                       setShowProfileDropdown(false); 
-                      addToast("Signed out successfully", "info"); 
+                      addToast(translations[appLanguage].logoutSuccess, "info"); 
                     }} 
                     style={{ color: 'var(--danger-color)' }}
                   >
                     <LogOut />
-                    Sign Out
+                    {translations[appLanguage].signOut}
                   </button>
                 </div>
               )}
             </div>
+            ) : (
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <button 
+                  className="theme-toggle-btn"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--border-color)', padding: '0.4rem', borderRadius: '4px', cursor: 'pointer', background: 'var(--bg-input)', color: 'var(--text-primary)' }}
+                  title="Design anpassen"
+                >
+                  {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+                <button 
+                  className="btn" 
+                  style={{ height: '38px', padding: '0 1.25rem', fontSize: '0.85rem' }}
+                  onClick={() => {
+                    setAuthMode('login');
+                    setShowAuthModal(true);
+                  }}
+                >
+                  {translations[appLanguage].signIn}
+                </button>
+              </div>
+            )}
           </div>
         </header>
 
@@ -1334,7 +1480,7 @@ function App() {
               <div style={{ marginBottom: '1.5rem' }}>
                 <button className="back-to-explore-btn" onClick={() => setSelectedBook(null)}>
                   <ArrowLeft size={16} />
-                  <span>Back to Catalog</span>
+                  <span>{translations[appLanguage].backToCatalog}</span>
                 </button>
               </div>
 
@@ -1379,11 +1525,11 @@ function App() {
                 <div className="book-detail-right-col">
                   <div className="detail-title-section">
                     <h1 className="detail-title" style={{ fontSize: '2.5rem' }}>{selectedBook.title}</h1>
-                    <span className="detail-author" style={{ fontSize: '1.35rem' }}>by {selectedBook.author}</span>
+                    <span className="detail-author" style={{ fontSize: '1.35rem' }}>{appLanguage === 'de' ? `von ${selectedBook.author}` : `by ${selectedBook.author}`}</span>
                   </div>
 
                   <div className="detail-title-section">
-                    <span className="meta-label">Synopsis Description</span>
+                    <span className="meta-label">{translations[appLanguage].synopsis}</span>
                     <p className="detail-desc" style={{ fontSize: '1.05rem', lineHeight: '1.7' }}>
                       {selectedBook.description || "No description provided."}
                     </p>
@@ -1392,7 +1538,7 @@ function App() {
                   {/* REVIEWS & RATINGS LIST */}
                   <div className="reviews-section">
                     <div className="reviews-header">
-                      <span className="reviews-title">User Reviews ({selectedBook.ratingCount || 0})</span>
+                      <span className="reviews-title">{translations[appLanguage].userReviews} ({selectedBook.ratingCount || 0})</span>
                       <div className="rating-inline" style={{ fontSize: '1.1rem' }}>
                         <Star style={{ fill: 'var(--rating-color)', color: 'var(--rating-color)' }} />
                         <span>{selectedBook.averageRating > 0 ? selectedBook.averageRating.toFixed(1) : "Unrated"}</span>
@@ -1400,12 +1546,33 @@ function App() {
                     </div>
 
                     {/* Submit review */}
-                    {activeUser.role !== 'GUEST' ? (
+                    {!activeUser ? (
+                      <div className="add-review-form" style={{ borderStyle: 'solid', textAlign: 'center', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.95rem', fontWeight: 750, color: 'var(--text-primary)' }}>
+                          {translations[appLanguage].needLoginToReviewTitle}
+                        </span>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                          {translations[appLanguage].needLoginToReviewDesc}
+                        </span>
+                        <button 
+                          className="btn" 
+                          style={{ height: '36px', padding: '0 1.25rem', fontSize: '0.85rem' }}
+                          onClick={() => {
+                            setAuthMode('login');
+                            setShowAuthModal(true);
+                          }}
+                        >
+                          {translations[appLanguage].loginOrRegister}
+                        </button>
+                      </div>
+                    ) : activeUser.role !== 'GUEST' ? (
                       <form onSubmit={handleAddRating} className="add-review-form">
-                        <span className="form-title">Write a Review</span>
+                        <span className="form-title">
+                          {ratings.some(r => r.bookId === selectedBook.id && r.userId === activeUser.id) ? translations[appLanguage].editReview : translations[appLanguage].writeReview}
+                        </span>
                         
                         <div className="star-rating-select">
-                          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginRight: '0.5rem' }}>Your Rating:</span>
+                          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginRight: '0.5rem' }}>{translations[appLanguage].yourRating}</span>
                           {[1, 2, 3, 4, 5].map(starNum => (
                             <button
                               key={starNum}
@@ -1420,19 +1587,19 @@ function App() {
 
                         <textarea
                           className="comment-textarea"
-                          placeholder="Share your thoughts on this book..."
+                          placeholder={translations[appLanguage].reviewPlaceholder}
                           value={newRating.comment}
                           onChange={e => setNewRating({ ...newRating, comment: e.target.value })}
                         />
 
                         <button type="submit" className="btn" style={{ fontSize: '0.85rem', padding: '0.5rem 1rem', alignSelf: 'flex-end' }}>
-                          Submit Review
+                          {ratings.some(r => r.bookId === selectedBook.id && r.userId === activeUser.id) ? translations[appLanguage].updateReview : translations[appLanguage].submitReview}
                         </button>
                       </form>
                     ) : (
                       <div className="add-review-form" style={{ borderStyle: 'solid', textAlign: 'center', padding: '1rem' }}>
                         <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                          Guest profile. Switch user role to review this book.
+                          {translations[appLanguage].guestWarning}
                         </span>
                       </div>
                     )}
@@ -1474,10 +1641,10 @@ function App() {
                             <p className="review-comment">"{review.comment}"</p>
 
                             {/* Delete Review (Author or Admin) */}
-                            {(activeUser.role === 'ADMIN' || review.userId === activeUser.id) && (
+                            {(activeUser && (activeUser?.role === 'ADMIN' || review.userId === activeUser.id)) && (
                               <button 
                                 className="review-delete-btn"
-                                title="Delete Review"
+                                title={appLanguage === 'de' ? "Löschen" : "Delete"}
                                 onClick={() => handleDeleteRating(review.id)}
                               >
                                 <Trash size={14} />
@@ -1505,7 +1672,7 @@ function App() {
                   {/* Dynamic Filter Tag Chips row */}
                   {(selectedGenres.length > 0 || selectedAuthors.length > 0 || minPriceFilter > 0 || maxPriceFilter < 100 || selectedLanguages.length > 0 || minRatingFilter > 0) && (
                     <div className="active-filters-chips-bar">
-                      <span className="active-filters-label">Active Filters:</span>
+                      <span className="active-filters-label">{translations[appLanguage].activeFilters}</span>
                       
                       {selectedGenres.map(g => (
                         <div key={g} className="filter-chip">
@@ -1516,14 +1683,14 @@ function App() {
 
                       {selectedAuthors.map(a => (
                         <div key={a} className="filter-chip">
-                          <span>Author: {a}</span>
+                          <span>{appLanguage === 'de' ? 'Autor' : 'Author'}: {a}</span>
                           <X size={12} onClick={() => handleAuthorCheckbox(a)} />
                         </div>
                       ))}
 
                       {(minPriceFilter > 0 || maxPriceFilter < 100) && (
                         <div className="filter-chip">
-                          <span>Price: ${minPriceFilter} - ${maxPriceFilter}</span>
+                          <span>{appLanguage === 'de' ? `Preis: ${minPriceFilter}€ - ${maxPriceFilter}€` : `Price: ${minPriceFilter} - ${maxPriceFilter}`}</span>
                           <X size={12} onClick={() => {
                             setMinPriceFilter(0);
                             setMaxPriceFilter(100);
@@ -1533,14 +1700,14 @@ function App() {
 
                       {selectedLanguages.map(l => (
                         <div key={l} className="filter-chip">
-                          <span>Language: {l}</span>
+                          <span>{appLanguage === 'de' ? 'Sprache' : 'Language'}: {l}</span>
                           <X size={12} onClick={() => handleLanguageCheckbox(l)} />
                         </div>
                       ))}
 
                       {minRatingFilter > 0 && (
                         <div className="filter-chip">
-                          <span>Rating: &gt;={minRatingFilter.toFixed(1)} ⭐</span>
+                          <span>{appLanguage === 'de' ? `Bewertung` : `Rating`}: &gt;={minRatingFilter.toFixed(1)} ⭐</span>
                           <X size={12} onClick={() => setMinRatingFilter(0)} />
                         </div>
                       )}
@@ -1550,11 +1717,11 @@ function App() {
               {/* Catalog Toolbar with Sorting */}
               <div className="catalog-toolbar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
-                  {filteredBooks.length} {filteredBooks.length === 1 ? "book" : "books"} found
+                  {filteredBooks.length} {appLanguage === 'de' ? (filteredBooks.length === 1 ? "Buch" : "Bücher") : (filteredBooks.length === 1 ? "book" : "books")} {appLanguage === 'de' ? "gefunden" : "found"}
                 </span>
                 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <label htmlFor="sort-select" style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Sort by:</label>
+                  <label htmlFor="sort-select" style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>{appLanguage === 'de' ? "Sortieren nach:" : "Sort by:"}</label>
                   <select 
                     id="sort-select" 
                     className="select-filter" 
@@ -1562,11 +1729,11 @@ function App() {
                     value={sortBy}
                     onChange={e => setSortBy(e.target.value)}
                   >
-                    <option value="rating">Top Rated ⭐</option>
-                    <option value="reviews">Most Reviews 💬</option>
-                    <option value="title">Title (A-Z)</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
+                    <option value="rating">{appLanguage === 'de' ? "Beste Bewertung" : "Top Rated"} ⭐</option>
+                    <option value="reviews">{appLanguage === 'de' ? "Die meisten Rezensionen" : "Most Reviews"} 💬</option>
+                    <option value="title">{appLanguage === 'de' ? "Titel (A-Z)" : "Title (A-Z)"}</option>
+                    <option value="price-low">{appLanguage === 'de' ? "Preis: Aufsteigend" : "Price: Low to High"}</option>
+                    <option value="price-high">{appLanguage === 'de' ? "Preis: Absteigend" : "Price: High to Low"}</option>
                   </select>
                 </div>
               </div>
@@ -1588,7 +1755,7 @@ function App() {
 
                       <div className="book-card-body">
                         <h3 className="book-card-title">{book.title}</h3>
-                        <span className="book-card-author">by {book.author}</span>
+                        <span className="book-card-author">{appLanguage === 'de' ? `von ${book.author}` : `by ${book.author}`}</span>
                         
                         <div className="book-card-footer">
                           <div className="rating-inline">
@@ -1598,7 +1765,7 @@ function App() {
                           </div>
                           <span className="book-pages-badge">
                             <Clock size={12} />
-                            {book.pagecount} p.
+                            {book.pagecount} {appLanguage === 'de' ? 'S.' : 'p.'}
                           </span>
                         </div>
                       </div>
@@ -1610,9 +1777,9 @@ function App() {
                   <div className="empty-icon">
                     <Search />
                   </div>
-                  <h3 className="empty-title">No books match the criteria</h3>
-                  <p className="empty-desc">We couldn't find any books matching your combined filters. Try clearing some constraints.</p>
-                  <button className="btn btn-secondary" onClick={handleClearFilters}>Reset Filters</button>
+                  <h3 className="empty-title">{appLanguage === 'de' ? "Keine Bücher entsprechen den Kriterien" : "No books match the criteria"}</h3>
+                  <p className="empty-desc">{appLanguage === 'de' ? "Wir konnten keine Bücher finden, die deinen Filtern entsprechen. Versuche, einige Kriterien zurückzusetzen." : "We couldn't find any books matching your combined filters. Try clearing some constraints."}</p>
+                  <button className="btn btn-secondary" onClick={handleClearFilters}>{appLanguage === 'de' ? "Filter zurücksetzen" : "Reset Filters"}</button>
                 </div>
               )}
             </>
@@ -1636,7 +1803,7 @@ function App() {
                   </button>
                 ) : (
                   <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    (Switch role to <strong>ADMIN</strong> in the profile settings menu to add or edit catalog records)
+                    {translations[appLanguage].adminRequired}
                   </span>
                 )}
               </div>
@@ -1645,14 +1812,14 @@ function App() {
                 <table className="data-table">
                   <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>Author</th>
+                      <th>{translations[appLanguage].tableTitle}</th>
+                      <th>{translations[appLanguage].tableAuthor}</th>
                       <th>ISBN</th>
-                      <th>Genre</th>
-                      <th>Language</th>
-                      <th>Pages</th>
-                      <th>Price</th>
-                      <th>Actions</th>
+                      <th>{translations[appLanguage].tableGenre}</th>
+                      <th>{translations[appLanguage].tableLanguage}</th>
+                      <th>{translations[appLanguage].tablePages}</th>
+                      <th>{translations[appLanguage].tablePrice}</th>
+                      <th>{translations[appLanguage].tableActions}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1670,15 +1837,15 @@ function App() {
                         <td className="actions-cell">
                           <button 
                             className="action-icon-btn" 
-                            title="Edit Details"
-                            disabled={activeUser.role !== 'ADMIN'}
+                            title={appLanguage === 'de' ? "Details bearbeiten" : "Edit Details"}
+                            disabled={activeUser?.role !== 'ADMIN'}
                             onClick={(e) => openEditModal(book, e)}
                           >
                             <Edit />
                           </button>
                           <button 
                             className="action-icon-btn delete" 
-                            title="Delete Book"
+                            title={appLanguage === 'de' ? "Buch löschen" : "Delete Book"}
                             disabled={activeUser.role !== 'ADMIN'}
                             onClick={(e) => handleDeleteBook(book.id, e)}
                           >
@@ -1702,7 +1869,28 @@ function App() {
 
           {/* TAB 4: MY REVIEWS */}
           {activeTab === 'reviews' && (
-            <div className="my-reviews-layout">
+            !activeUser ? (
+              <div className="empty-state" style={{ borderStyle: 'solid', borderWidth: '3px', boxShadow: 'var(--shadow-lg)', maxWidth: '500px', margin: '2rem auto' }}>
+                <div className="empty-icon" style={{ backgroundColor: 'rgba(99, 102, 241, 0.1)', color: 'var(--accent-primary)', border: '2px solid var(--border-color)', boxShadow: '2px 2px 0px var(--shadow-color)' }}>
+                  <Lock size={24} />
+                </div>
+                <h3 className="empty-title" style={{ fontSize: '1.5rem', fontWeight: 850, marginBottom: '0.75rem', fontFamily: 'var(--font-heading)' }}>{translations[appLanguage].needLoginReviewsTitle}</h3>
+                <p className="empty-desc" style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '400px', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+                  {translations[appLanguage].needLoginReviewsDesc}
+                </p>
+                <button 
+                  className="btn" 
+                  style={{ height: '38px', padding: '0 1.5rem', fontSize: '0.9rem' }}
+                  onClick={() => {
+                    setAuthMode('login');
+                    setShowAuthModal(true);
+                  }}
+                >
+                  {translations[appLanguage].loginRegisterBtn}
+                </button>
+              </div>
+            ) : (
+              <div className="my-reviews-layout">
               <div className="admin-actions-header" style={{ marginBottom: '1.5rem' }}>
                 <div>
                   <h2 style={{ fontSize: '1.5rem', fontWeight: 850, marginBottom: '0.25rem' }}>Meine Bewertungen</h2>
@@ -1720,7 +1908,7 @@ function App() {
                   </div>
                   <div className="stat-details">
                     <span className="stat-value">{ratings.filter(r => r.userId === activeUser.id).length}</span>
-                    <span className="stat-label">Geschriebene Bewertungen</span>
+                    <span className="stat-label">{translations[appLanguage].statWritten}</span>
                   </div>
                 </div>
 
@@ -1735,7 +1923,7 @@ function App() {
                         : "0.0"
                       } ⭐
                     </span>
-                    <span className="stat-label">Durchschnittliche Bewertung</span>
+                    <span className="stat-label">{translations[appLanguage].statAvgRating}</span>
                   </div>
                 </div>
 
@@ -1766,7 +1954,7 @@ function App() {
                         return favoriteGenre;
                       })()}
                     </span>
-                    <span className="stat-label">Lieblingsgenre</span>
+                    <span className="stat-label">{translations[appLanguage].statFavoriteGenre}</span>
                   </div>
                 </div>
               </div>
@@ -1813,8 +2001,18 @@ function App() {
                         </p>
 
                         <button 
+                          className="review-edit-btn"
+                          title={appLanguage === 'de' ? "Bearbeiten" : "Edit"}
+                          onClick={() => {
+                            setSelectedBook(book);
+                          }}
+                          style={{ right: '3.5rem', bottom: '1.5rem' }}
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button 
                           className="review-delete-btn"
-                          title="Löschen"
+                          title={appLanguage === 'de' ? "Löschen" : "Delete"}
                           onClick={() => handleDeleteRating(review.id)}
                           style={{ position: 'absolute', right: '1.5rem', bottom: '1.5rem' }}
                         >
@@ -1828,12 +2026,13 @@ function App() {
                     <div className="empty-icon">
                       <Star />
                     </div>
-                    <h3 className="empty-title">Keine Bewertungen verfasst</h3>
-                    <p className="empty-desc">Du hast für dieses Profil noch keine Bewertungen geschrieben.</p>
+                    <h3 className="empty-title">{translations[appLanguage].noReviewsWritten}</h3>
+                    <p className="empty-desc">{translations[appLanguage].noReviewsWrittenDesc}</p>
                   </div>
                 )}
               </div>
             </div>
+          )
           )}
             </>
           )}
@@ -1846,7 +2045,7 @@ function App() {
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             
             <div className="modal-header">
-              <h2 className="modal-title">{editingBook ? "Modify Book Record" : "Add Book to Repository"}</h2>
+              <h2 className="modal-title">{editingBook ? translations[appLanguage].modifyBook : translations[appLanguage].addBookToRepo}</h2>
               <button className="close-btn" onClick={() => { setShowModal(false); setEditingBook(null); }}>
                 <X size={18} />
               </button>
@@ -1857,7 +2056,7 @@ function App() {
                 
                 <div className="form-grid">
                   <div className="form-group">
-                    <label htmlFor="title">Book Title</label>
+                    <label htmlFor="title">{translations[appLanguage].bookTitle}</label>
                     <input 
                       id="title" 
                       type="text" 
@@ -1870,7 +2069,7 @@ function App() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="author">Author Name</label>
+                    <label htmlFor="author">{translations[appLanguage].bookAuthor}</label>
                     <input 
                       id="author" 
                       type="text" 
@@ -1908,14 +2107,14 @@ function App() {
                           onClick={() => enrichBookFromOpenLibrary(newBookForm.isbn)}
                           disabled={enriching || !newBookForm.isbn.trim()}
                         >
-                          Enrich
+                          {appLanguage === 'de' ? "Abrufen" : "Enrich"}
                         </button>
                       )}
                     </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="genre">Genre Category</label>
+                    <label htmlFor="genre">{appLanguage === 'de' ? "Genre-Kategorie" : "Genre Category"}</label>
                     <select 
                       id="genre" 
                       className="select-filter" 
@@ -1930,7 +2129,7 @@ function App() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="price">Store Price ($)</label>
+                    <label htmlFor="price">{appLanguage === 'de' ? "Verkaufspreis (€)" : "Store Price ($)"}</label>
                     <input 
                       id="price" 
                       type="number" 
@@ -1945,7 +2144,7 @@ function App() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="pages">Page Count</label>
+                    <label htmlFor="pages">{translations[appLanguage].bookPages}</label>
                     <input 
                       id="pages" 
                       type="number" 
@@ -1959,7 +2158,7 @@ function App() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="publisher">Publisher</label>
+                    <label htmlFor="publisher">{appLanguage === 'de' ? "Verlag" : "Publisher"}</label>
                     <input 
                       id="publisher" 
                       type="text" 
@@ -1971,7 +2170,7 @@ function App() {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="pubdate">Publishing Date</label>
+                    <label htmlFor="pubdate">{appLanguage === 'de' ? "Veröffentlichungsdatum" : "Publishing Date"}</label>
                     <input 
                       id="pubdate" 
                       type="date" 
@@ -1982,11 +2181,11 @@ function App() {
                   </div>
 
                   <div className="form-group full-width">
-                    <label htmlFor="description">Synopsis / Description</label>
+                    <label htmlFor="description">{translations[appLanguage].bookDescription}</label>
                     <textarea 
                       id="description" 
                       className="comment-textarea" 
-                      placeholder="Enter summary or synopsis details..."
+                      placeholder={appLanguage === 'de' ? "Zusammenfassung oder Beschreibung eingeben..." : "Enter summary or synopsis details..."}
                       style={{ minHeight: '100px' }}
                       value={newBookForm.description}
                       onChange={e => setNewBookForm({ ...newBookForm, description: e.target.value })}
@@ -2033,7 +2232,7 @@ function App() {
                 <input 
                   type="text" 
                   className="dialog-search-input" 
-                  placeholder="Filter genres..." 
+                  placeholder={translations[appLanguage].filterGenres} 
                   value={dialogSearch}
                   onChange={e => setDialogSearch(e.target.value)}
                 />
@@ -2057,7 +2256,7 @@ function App() {
                 ))}
                 {filteredDialogGenres.length === 0 && (
                   <div style={{ gridColumn: 'span 3', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', padding: '1rem' }}>
-                    No genres match your query.
+                    {appLanguage === 'de' ? "Keine Genres entsprechen deiner Suche." : "No genres match your query."}
                   </div>
                 )}
               </div>
@@ -2111,7 +2310,7 @@ function App() {
                 <input 
                   type="text" 
                   className="dialog-search-input" 
-                  placeholder="Filter authors..." 
+                  placeholder={translations[appLanguage].filterAuthors} 
                   value={dialogSearchAuthor}
                   onChange={e => setDialogSearchAuthor(e.target.value)}
                 />
@@ -2167,6 +2366,121 @@ function App() {
         </div>
       )}
 
+      {/* Auth Modal Overlay Dialog */}
+      {showAuthModal && (
+        <div className="modal-overlay" onClick={() => setShowAuthModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '400px', margin: '1rem', borderStyle: 'solid', borderWidth: '3px', boxShadow: 'var(--shadow-lg)' }}>
+            <div className="modal-header">
+              <div className="brand" style={{ padding: 0, border: 'none', margin: 0, gap: '0.5rem' }}>
+                <div className="brand-logo" style={{ width: '32px', height: '32px', fontSize: '1rem' }}>
+                  <BookOpen size={16} />
+                </div>
+                <span className="brand-name" style={{ fontSize: '1.25rem' }}>Bookly</span>
+              </div>
+              <button className="close-btn" onClick={() => setShowAuthModal(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-primary)' }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body" style={{ padding: '1.5rem 2rem' }}>
+              <div className="auth-tabs">
+                <button 
+                  className={`auth-tab ${authMode === 'login' ? 'active' : ''}`}
+                  onClick={() => setAuthMode('login')}
+                >
+                  {translations[appLanguage].login}
+                </button>
+                <button 
+                  className={`auth-tab ${authMode === 'register' ? 'active' : ''}`}
+                  onClick={() => setAuthMode('register')}
+                >
+                  {translations[appLanguage].register}
+                </button>
+              </div>
+
+              {authMode === 'login' ? (
+                <form onSubmit={handleLogin} className="auth-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{translations[appLanguage].usernameOrEmail}</label>
+                    <input 
+                      type="text" 
+                      className="range-number-input"
+                      style={{ height: '38px', padding: '0 0.75rem' }}
+                      placeholder="e.g. sarah_read or john@example.com"
+                      value={usernameInput}
+                      onChange={e => setUsernameInput(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{translations[appLanguage].password}</label>
+                    <input 
+                      type="password" 
+                      className="range-number-input"
+                      style={{ height: '38px', padding: '0 0.75rem' }}
+                      placeholder="••••••••"
+                      value={passwordInput}
+                      onChange={e => setPasswordInput(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <button type="submit" className="btn" style={{ width: '100%', height: '38px', marginTop: '0.5rem' }}>
+                    {translations[appLanguage].signIn}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleRegister} className="auth-form" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{translations[appLanguage].username}</label>
+                    <input 
+                      type="text" 
+                      className="range-number-input"
+                      style={{ height: '38px', padding: '0 0.75rem' }}
+                      placeholder="e.g. bookworm99"
+                      value={usernameInput}
+                      onChange={e => setUsernameInput(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{translations[appLanguage].email}</label>
+                    <input 
+                      type="email" 
+                      className="range-number-input"
+                      style={{ height: '38px', padding: '0 0.75rem' }}
+                      placeholder="e.g. user@example.com"
+                      value={emailInput}
+                      onChange={e => setEmailInput(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <label style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-secondary)' }}>{translations[appLanguage].password}</label>
+                    <input 
+                      type="password" 
+                      className="range-number-input"
+                      style={{ height: '38px', padding: '0 0.75rem' }}
+                      placeholder="••••••••"
+                      value={passwordInput}
+                      onChange={e => setPasswordInput(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <button type="submit" className="btn" style={{ width: '100%', height: '38px', marginTop: '0.5rem' }}>
+                    {translations[appLanguage].register}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Mobile Bottom Navigation Bar (AppBar) */}
       <div className="mobile-bottom-nav">
         <button 
@@ -2174,14 +2488,14 @@ function App() {
           className={`mobile-nav-item ${activeTab === 'explore' ? 'active' : ''}`}
         >
           <Layers size={20} />
-          <span>Explore</span>
+          <span>{appLanguage === 'de' ? 'Stöbern' : 'Explore'}</span>
         </button>
         <button 
           onClick={() => { setActiveTab('reviews'); setSelectedBook(null); }}
           className={`mobile-nav-item ${activeTab === 'reviews' ? 'active' : ''}`}
         >
           <Star size={20} />
-          <span>Bewertungen</span>
+          <span>{appLanguage === 'de' ? 'Bewertungen' : 'Reviews'}</span>
         </button>
         {activeUser.role === 'ADMIN' && (
           <button 
@@ -2189,7 +2503,7 @@ function App() {
             className={`mobile-nav-item ${activeTab === 'manage' ? 'active' : ''}`}
           >
             <Settings size={20} />
-            <span>Settings</span>
+            <span>{appLanguage === 'de' ? 'Einstellungen' : 'Settings'}</span>
           </button>
         )}
       </div>
