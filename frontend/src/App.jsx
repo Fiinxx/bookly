@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { flushSync } from 'react-dom';
 import { 
   BookOpen, 
   Star, 
@@ -466,6 +467,18 @@ const emptyBookForm = {
 function App() {
   const [activeTab, setActiveTab] = useState('explore');
   const [selectedBook, setSelectedBook] = useState(null);
+
+  const setSelectedBookWithTransition = (book) => {
+    if (document.startViewTransition) {
+      document.startViewTransition(() => {
+        flushSync(() => {
+          setSelectedBook(book);
+        });
+      });
+    } else {
+      setSelectedBook(book);
+    }
+  };
   const [searchQuery, setSearchQuery] = useState('');
   const [theme, setTheme] = useState('dark');
   const [activeUser, setActiveUser] = useState(() => {
@@ -927,7 +940,7 @@ function App() {
       setBooks(prev => prev.filter(b => b.id !== bookId));
       setRatings(prev => prev.filter(r => r.bookId !== bookId));
       if (selectedBook && selectedBook.id === bookId) {
-        setSelectedBook(null);
+        setSelectedBookWithTransition(null);
       }
       addToast(translations[appLanguage].bookDeleted, "success");
     }
@@ -1132,7 +1145,7 @@ function App() {
           <ul className="nav-links">
             <li>
               <button 
-                onClick={() => { setActiveTab('explore'); setSelectedBook(null); }}
+                onClick={() => { setActiveTab('explore'); setSelectedBookWithTransition(null); }}
                 className={`nav-item ${activeTab === 'explore' ? 'active' : ''}`}
               >
                 <Layers />
@@ -1141,7 +1154,7 @@ function App() {
             </li>
             <li>
               <button 
-                onClick={() => { setActiveTab('reviews'); setSelectedBook(null); }}
+                onClick={() => { setActiveTab('reviews'); setSelectedBookWithTransition(null); }}
                 className={`nav-item ${activeTab === 'reviews' ? 'active' : ''}`}
               >
                 <Star />
@@ -1151,7 +1164,7 @@ function App() {
             {activeUser?.role === 'ADMIN' && (
               <li>
                 <button 
-                  onClick={() => { setActiveTab('manage'); setSelectedBook(null); }}
+                  onClick={() => { setActiveTab('manage'); setSelectedBookWithTransition(null); }}
                   className={`nav-item ${activeTab === 'manage' ? 'active' : ''}`}
                 >
                   <Settings />
@@ -1499,7 +1512,7 @@ function App() {
           {selectedBook ? (
             <div className="book-detail-main-container">
               <div style={{ marginBottom: '1.5rem' }}>
-                <button className="back-to-explore-btn" onClick={() => setSelectedBook(null)}>
+                <button className="back-to-explore-btn" onClick={() => setSelectedBookWithTransition(null)}>
                   <ArrowLeft size={16} />
                   <span>{translations[appLanguage].backToCatalog}</span>
                 </button>
@@ -1508,7 +1521,7 @@ function App() {
               <div className="book-detail-main-layout">
                 {/* LEFT COLUMN: Cover preview & metadata */}
                 <div className="book-detail-left-col">
-                  <div className="book-detail-cover">
+                  <div className="book-detail-cover" style={{ viewTransitionName: `book-cover-${selectedBook.id}` }}>
                     <span className="book-detail-badge-genre">{selectedBook.genre}</span>
                     <span className="book-detail-price-tag">{appLanguage === 'de' ? `${selectedBook.price.toFixed(2)}€` : `$${selectedBook.price.toFixed(2)}`}</span>
                     <span className="book-detail-cover-art">{selectedBook.title.charAt(0)}</span>
@@ -1545,8 +1558,8 @@ function App() {
                 {/* RIGHT COLUMN: Title info & reviews */}
                 <div className="book-detail-right-col">
                   <div className="detail-title-section">
-                    <h1 className="detail-title" style={{ fontSize: '2.5rem' }}>{selectedBook.title}</h1>
-                    <span className="detail-author" style={{ fontSize: '1.35rem' }}>{appLanguage === 'de' ? `von ${selectedBook.author}` : `by ${selectedBook.author}`}</span>
+                    <h1 className="detail-title" style={{ fontSize: '2.5rem', viewTransitionName: `book-title-${selectedBook.id}` }}>{selectedBook.title}</h1>
+                    <span className="detail-author" style={{ fontSize: '1.35rem', viewTransitionName: `book-author-${selectedBook.id}` }}>{appLanguage === 'de' ? `von ${selectedBook.author}` : `by ${selectedBook.author}`}</span>
                   </div>
 
                   <div className="detail-title-section">
@@ -1766,17 +1779,17 @@ function App() {
                     <div 
                       key={book.id} 
                       className="book-card"
-                      onClick={() => setSelectedBook(book)}
+                      onClick={() => setSelectedBookWithTransition(book)}
                     >
-                      <div className="book-cover-mock">
+                      <div className="book-cover-mock" style={{ viewTransitionName: `book-cover-${book.id}` }}>
                         <span className="book-badge-genre">{book.genre}</span>
                         <span className="book-price-tag">${book.price.toFixed(2)}</span>
                         <span className="book-cover-art">{book.title.charAt(0)}</span>
                       </div>
 
                       <div className="book-card-body">
-                        <h3 className="book-card-title">{book.title}</h3>
-                        <span className="book-card-author">{appLanguage === 'de' ? `von ${book.author}` : `by ${book.author}`}</span>
+                        <h3 className="book-card-title" style={{ viewTransitionName: `book-title-${book.id}` }}>{book.title}</h3>
+                        <span className="book-card-author" style={{ viewTransitionName: `book-author-${book.id}` }}>{appLanguage === 'de' ? `von ${book.author}` : `by ${book.author}`}</span>
                         
                         <div className="book-card-footer">
                           <div className="rating-inline">
@@ -1817,7 +1830,7 @@ function App() {
                   </p>
                 </div>
 
-                {activeUser.role === 'ADMIN' ? (
+                {activeUser?.role === 'ADMIN' ? (
                   <button className="btn" onClick={openCreateModal}>
                     <Plus size={18} />
                     Add New Book
@@ -1992,7 +2005,7 @@ function App() {
                           <div>
                             <h3 
                               style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)', cursor: 'pointer', display: 'inline-block' }}
-                              onClick={() => setSelectedBook(book)}
+                              onClick={() => setSelectedBookWithTransition(book)}
                               className="review-book-link"
                             >
                               {book.title}
@@ -2025,7 +2038,7 @@ function App() {
                           className="review-edit-btn"
                           title={appLanguage === 'de' ? "Bearbeiten" : "Edit"}
                           onClick={() => {
-                            setSelectedBook(book);
+                            setSelectedBookWithTransition(book);
                           }}
                           style={{ right: '3.5rem', bottom: '1.5rem' }}
                         >
@@ -2505,22 +2518,22 @@ function App() {
       {/* Mobile Bottom Navigation Bar (AppBar) */}
       <div className="mobile-bottom-nav">
         <button 
-          onClick={() => { setActiveTab('explore'); setSelectedBook(null); }}
+          onClick={() => { setActiveTab('explore'); setSelectedBookWithTransition(null); }}
           className={`mobile-nav-item ${activeTab === 'explore' ? 'active' : ''}`}
         >
           <Layers size={20} />
           <span>{appLanguage === 'de' ? 'Stöbern' : 'Explore'}</span>
         </button>
         <button 
-          onClick={() => { setActiveTab('reviews'); setSelectedBook(null); }}
+          onClick={() => { setActiveTab('reviews'); setSelectedBookWithTransition(null); }}
           className={`mobile-nav-item ${activeTab === 'reviews' ? 'active' : ''}`}
         >
           <Star size={20} />
           <span>{appLanguage === 'de' ? 'Bewertungen' : 'Reviews'}</span>
         </button>
-        {activeUser.role === 'ADMIN' && (
+        {activeUser?.role === 'ADMIN' && (
           <button 
-            onClick={() => { setActiveTab('manage'); setSelectedBook(null); }}
+            onClick={() => { setActiveTab('manage'); setSelectedBookWithTransition(null); }}
             className={`mobile-nav-item ${activeTab === 'manage' ? 'active' : ''}`}
           >
             <Settings size={20} />

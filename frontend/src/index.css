@@ -350,6 +350,7 @@ body {
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
+  view-transition-name: header-bar;
 }
 
 .header-brand-title {
@@ -2499,3 +2500,13 @@ body {
   color: #1e1e1e !important;
 }
 
+
+/* ============================================
+   View Transitions API — z-index containment
+   Promote the header-bar group above book element
+   groups so it always paints on top during the
+   morph animation.
+   ============================================ */
+::view-transition-group(header-bar) {
+  z-index: 10;
+}
